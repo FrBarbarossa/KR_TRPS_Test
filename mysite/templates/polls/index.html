@@ -109,6 +109,16 @@
         </div>
     </div>
 
-    <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" data-bs-title="Popover title" data-bs-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</button>
+    <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" data-bs-title="Popover title"
+            data-bs-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover
+    </button>
+
+    <form action="{% url 'polls:postcard'%}" method="post">
+
+        {% csrf_token %}
+        <label>Введите имя:</label>
+        <input type="text" name="pername">
+        <input type="submit" value="Vote">
+    </form>
 
 {% endblock content %}
