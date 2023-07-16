@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'bootstrap5',
     'django_extensions'
 ]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -79,8 +78,12 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'django_test',
+        "USER": "barbarossa_django",
+        'PASSWORD':"passw",
+        "HOST":"localhost",
+        "PORT":"5432"
     }
 }
 

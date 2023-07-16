@@ -8,11 +8,14 @@ def index(request):
 
 def postcard(request):
     print(request.POST['pername'])
-    print("!")
-    print(Person.objects.get(pk="2").name)
+    # print(request.session['name'])
+    # request.session.set_expiry(10)
+    # request.session.clear_expired()
+    request.session['name'] = "Alex"
+    # print(Person.objects.get(pk="2").name)
     try:
         Person(name=request.POST['pername']).save()
-    except IntegrityError:
-        pass
+    except IntegrityError as error:
+        print(error)
     return HttpResponseRedirect(reverse("polls:index"))
 # Create your views here.
