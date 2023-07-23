@@ -1,4 +1,10 @@
 {% extends "src/base.html" %}
+
+{% load static %}
+{% block js_add %}
+<script src="{% static 'js/test.js' %}"></script>
+{% endblock %}
+
 {% block title %}
     Демо index_page
 {% endblock %}
@@ -113,7 +119,7 @@
             data-bs-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover
     </button>
 
-    <form action="{% url 'polls:postcard'%}" method="post">
+    <form action="{% url 'polls:postcard' %}" method="post">
 
         {% csrf_token %}
         <label>Введите имя:</label>
@@ -121,4 +127,5 @@
         <input type="submit" value="Vote">
     </form>
 
+    <button type="button" id="test_button" class="btn btn-warning">PUSH ME</button>
 {% endblock content %}
