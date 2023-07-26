@@ -1,6 +1,7 @@
 $(document).ready(function () {
     // catch the form's submit event
-    $('#test_button').on('click', function () {
+    $('.test_button').on('click', function () {
+        console.log($(this).attr('id'));
         // create an AJAX call
         $.ajax({
             data: $(this).serialize(), // get the form data
