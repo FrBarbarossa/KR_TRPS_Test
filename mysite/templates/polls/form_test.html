@@ -1,0 +1,48 @@
+{% extends "src/base.html" %}
+
+{% load static %}
+{% block js_add %}
+    <script src="{% static 'js/test.js' %}"></script>
+    <script src="{% static 'js/form_addition.js' %}"></script>
+
+{% endblock %}
+
+{% block title %}
+    Демо formset_test
+{% endblock %}
+{% block content %}
+    <form action="{% url 'polls:formset_test' %}" method="post">
+        {% csrf_token %}
+
+        <div class="form-error">{{ form.non_field_errors }}</div>
+
+        {% for f in form %}
+            <p>{{ f.label }}</p>
+            <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}: </label>{{ f }}</p>
+            <div class="form-error">{{ f.errors }}</div>
+        {% endfor %}
+
+
+        <button type="submit">Добавить</button>
+    </form>
+
+
+    <form action="{% url 'polls:formset_test' %}" method="post">
+        {% csrf_token %}
+
+        <div class="form-error">{{ form.non_field_errors }}</div>
+        {% if form %}
+            {% for f in form %}
+                <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}: </label>{{ f }}</p>
+                <div class="form-error">{{ f.errors }}</div>
+            {% endfor %}
+        {% endif %}
+        <div id="additional_form">
+
+        </div>
+
+        <button type="submit">Добавить</button>
+    </form>
+    <button class="add_form btn btn-primary">Добавить форму</button>
+
+{% endblock content %}
