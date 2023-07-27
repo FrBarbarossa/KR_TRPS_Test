@@ -8,6 +8,7 @@ def index(request):
 
 def postcard(request):
     print(request.POST['pername'])
+    print(request.POST)
     # print(request.session['name'])
     # request.session.set_expiry(10)
     # request.session.clear_expired()
