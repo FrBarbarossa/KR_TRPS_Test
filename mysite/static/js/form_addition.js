@@ -4,6 +4,8 @@ $(document).ready(function () {
         console.log($(this).attr('class'));
         var some = $('input[name^="input_"]').last().attr('id');  // Matches those that begin with 'tcol';
         console.log(some);
+        console.log(arr);
+        arr.push(some);
         if (!some) {
             some = 0;
         } else {
