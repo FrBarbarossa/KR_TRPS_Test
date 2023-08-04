@@ -24,3 +24,10 @@ $(document).ready(function () {
         return false;
     });
 })
+
+
+// window.setInterval(yourfunction, 10000);
+//
+// function yourfunction() {
+//     alert(arr);
+// }
