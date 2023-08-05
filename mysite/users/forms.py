@@ -45,6 +45,14 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
 
+    def clean_email(self):
+        # Check that email is not duplicate
+        username = self.cleaned_data["username"]
+        email = self.cleaned_data["email"]
+        users = User.objects.filter(email__iexact=email).exclude(username__iexact=username)
+        if users:
+            raise forms.ValidationError('A user with that email already exists.')
+        return email.lower()
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(max_length=100,

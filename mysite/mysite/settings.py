@@ -148,3 +148,9 @@ SOCIAL_AUTH_GITHUB_SECRET = '886e755d81b70c927fd272a5b48a5dc4af541545'
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '923743604330-f8eonrmmjp53549j5qpco63tiemd18ug.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+
+# email configs
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
