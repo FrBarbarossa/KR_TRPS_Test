@@ -51,7 +51,7 @@ class RegisterForm(UserCreationForm):
         email = self.cleaned_data["email"]
         users = User.objects.filter(email__iexact=email).exclude(username__iexact=username)
         if users:
-            raise forms.ValidationError('A user with that email already exists.')
+            raise forms.ValidationError('Пользователь с таким e-mail уже существует.')
         return email.lower()
 
 class LoginForm(AuthenticationForm):

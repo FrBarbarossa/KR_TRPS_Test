@@ -1,5 +1,6 @@
 {% extends "src/base.html" %}
-{% block title %} Login Page {% endblock title %}
+{% load i18n %}
+{% block title %} Вход {% endblock title %}
 {% block content %}
     <div class="form-content my-3 p-3">
         <div class="container">
@@ -13,7 +14,7 @@
                             <div class="alert alert-danger alert-dismissible" role="alert">
                                 <div id="form_errors">
                                     {% for key, value in form.errors.items %}
-                                        <strong>{{ value }}</strong>
+                                        <strong>{% blocktranslate %}{{ value }}{% endblocktranslate %}</strong>
                                     {% endfor %}
                                 </div>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"
@@ -27,13 +28,13 @@
                                     <div class="col-md-10 offset-md-1">
                                         <div class="form-group">
                                             <a href="{% url 'social:begin' 'github' %}"
-                                               class="btn btn-link btn-lg active btn-block">Sign in with GitHub</a>
+                                               class="btn btn-link btn-lg active btn-block">Войти с помощью GitHub</a>
                                             <a href="{% url 'social:begin' 'google-oauth2' %}"
-                                               class="btn btn-link btn-lg active btn-block">Sign in with Google</a>
+                                               class="btn btn-link btn-lg active btn-block">Войти с помощью Google</a>
                                             <hr>
-                                            <p class="text-center"><strong>OR</strong></p>
+                                            <p class="text-center"><strong>ИЛИ</strong></p>
                                             <hr>
-                                            <label class="small mb-1">Username</label>
+                                            <label class="small mb-1">Имя пользователя</label>
                                             {{ form.username }}
                                         </div>
                                     </div>
@@ -41,7 +42,7 @@
                                 <div class="form-row">
                                     <div class="col-md-10 offset-md-1">
                                         <div class="form-group">
-                                            <label class="small mb-1">Password</label>
+                                            <label class="small mb-1">Пароль</label>
                                             {{ form.password }}
                                         </div>
                                     </div>
@@ -51,14 +52,14 @@
                                         <div class="form-group">
                                             <!-- Add a Remember me functionality -->
                                             {{ form.remember_me }}
-                                            <label> Remember me</label>
+                                            <label> Запомнить меня</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-10 offset-md-1">
                                         <div class="form-group mt-0 mb-1">
-                                            <button name="login" class="col-md-12 btn btn-dark" id="login">Sign in
+                                            <button name="login" class="col-md-12 btn btn-dark" id="login">Войти
                                             </button>
                                         </div>
                                     </div>
@@ -67,9 +68,8 @@
                         </div>
                         <div class="card-footer text-center">
                             <div class="small">
-                                <a href="{% url 'users:users-register' %}">Don't have an account yet? Go to
-                                    signup</a><br>
-                                <a href="{% url 'users:password_reset' %}"><i>Forgot Password?</i></a>
+                                <a href="{% url 'users:users-register' %}">Ещё не зарегестрированы? Создать аккаунт</a><br>
+                                <a href="{% url 'users:password_reset' %}"><i>Забыли пароль?</i></a>
                             </div>
                         </div>
                     </div>
