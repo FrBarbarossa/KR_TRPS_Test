@@ -1,0 +1,15 @@
+{% extends "src/base.html" %}
+{% block title %}Выход{% endblock title %}
+{% block content %}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+        <h5 class="card-title">Вы успешно вышли из системы</h5>
+        <p class="card-text">
+            Спасибо за ваше время! Если есть пожелания или вопросы, обращайтесь по электронной почте :)
+        </p>
+        <br><hr><a href="{% url 'users:login' %}" class="btn btn-primary">Войти снова</a>
+        </div>
+    </div>
+
+
+{% endblock content %}

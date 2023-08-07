@@ -14,6 +14,7 @@ def index(request):
 def postcard(request):
     print(request.POST['pername'])
     print(request.POST)
+
     # print(request.session['name'])
     # request.session.set_expiry(10)
     # request.session.clear_expired()
@@ -28,6 +29,7 @@ def postcard(request):
 
 def test_ajax(request):
     print("!!!!!")
+    print(request.headers.get('x-requested-with') == 'XMLHttpRequest') # Check if request is ajax
     return JsonResponse({'status': 'Invalid request', "some_param": True}, status=200)
 
 
@@ -38,6 +40,7 @@ def formset_test(request):
         # formSet = formset_factory(SurnameForm, extra=4)
     if request.method == "POST":
         print(request.POST)
+        # return JsonResponse({'status': 'Invalid request', "some_param": True}, status=200)
         # formSet = formset_factory(NameForm, SurnameForm, extra=4)
     return render(request, 'polls/form_test.html')
 

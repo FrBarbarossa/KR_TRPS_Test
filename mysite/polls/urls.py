@@ -7,5 +7,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('postcard/', views.postcard, name='postcard'),
     path('test_ajax/', views.test_ajax, name='ajax'),
-    path('formset_test', views.formset_test, name='formset_test')
+    path('formset_test', views.formset_test, name='formset_test'),
 ]
