@@ -23,3 +23,9 @@ class Profile(models.Model):
             new_img = (100, 100)
             img.thumbnail(new_img)
             img.save(self.avatar.path)
+
+    class Meta:
+        permissions = (
+            ("can_implement_tasks", "To earn money$"),
+            ("can_create_tasks", "To create tools"),
+            ("can_use_business_interface", "To use creators tools"))
