@@ -1,0 +1,33 @@
+{% extends "src/base.html" %}
+
+{% load static %}
+{% block js_add %}
+    <script src="{% static 'js/form_creation.js' %}"></script>
+    <script>
+        let arr = [];
+    </script>
+{% endblock %}
+
+{% block title %}
+    Демо formset_test
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+
+                <button type="button" class="btn btn-primary" draggable="true"
+                        ondragstart="drag(event)">Primary
+                </button>
+
+            </div>
+            <div class="col-auto">
+                <p>Drag the logo into the rectangle:</p>
+
+                <div class="border border-dark border-5" id="div1" style="min-height: 100px;"
+                     ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                <br>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

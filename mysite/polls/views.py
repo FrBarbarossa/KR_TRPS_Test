@@ -48,4 +48,7 @@ def formset_test(request):
         # formSet = formset_factory(NameForm, SurnameForm, extra=4)
     return render(request, 'polls/form_test.html')
 
+
+def form_creation(request):
+    return render(request, 'polls/form_creation.html')
 # Create your views here.
