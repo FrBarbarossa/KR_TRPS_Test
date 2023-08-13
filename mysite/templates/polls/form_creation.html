@@ -16,17 +16,78 @@
         <div class="row">
             <div class="col-3">
 
-                <button type="button" class="btn btn-primary" draggable="true"
+                <button id='test_btn' type="button" class="btn btn-primary" draggable="true"
                         ondragstart="drag(event)">Primary
                 </button>
 
+                <button id='test_btn' type="button" class="btn btn-primary" onclick="addFormLine(this, 'chose')">Primary
+                </button>
+
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action">A simple default list group item</a>
+
+                    <div class="list-group-item list-group-item-action list-group-item-primary">A simple primary
+                        list group item
+                    </div>
+
+                    <div class="list-group-item list-group-item-action list-group-item-light">
+                        <div class="container text-center">
+                            <div class="row justify-content-between">
+                                <div class="col-auto">
+                                    Один вариант
+                                </div>
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-success" onclick="addFormLine(this, 'chose')">
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="col-auto">
-                <p>Drag the logo into the rectangle:</p>
 
-                <div class="border border-dark border-5" id="div1" style="min-height: 100px;"
-                     ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                <br>
+                {#                <p>Drag the logo into the rectangle:</p>#}
+                {##}
+                {#                <div class="border border-dark border-5" id="div1" style="min-height: 100px;"#}
+                {#                     ondrop="drop(event)" ondragover="allowDrop(event)"></div>#}
+                {#                <br>#}
+                <div class="border border-dark border-5" id="form_zone"
+                     style="min-height: 100px; min-width: 800px">
+
+{#                    <div class="container list-group-item list-group-item-action list-group-item-secondary"#}
+{#                         style="min-height:75px;">#}
+{#                        <div class="row">#}
+{#                            <div class="col col-auto">#}
+{#                                <h5>Тут вопрос</h5>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="row justify-content-between">#}
+{#                            <div class="col col-auto">#}
+{#                                Тут указание на тип вопроса#}
+{#                            </div>#}
+{#                            <div class="col col-auto">#}
+{#                                <button type="button" class="btn btn-secondary">#}
+{#                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"#}
+{#                                         class="bi bi-chevron-up" viewBox="0 0 16 16">#}
+{#                                        <path fill-rule="evenodd"#}
+{#                                              d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"></path>#}
+{#                                    </svg>#}
+{#                                </button>#}
+{#                                <button type="button" class="btn btn-secondary">#}
+{#                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"#}
+{#                                         class="bi bi-chevron-down" viewBox="0 0 16 16">#}
+{#                                        <path fill-rule="evenodd"#}
+{#                                              d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"></path>#}
+{#                                    </svg>#}
+{#                                </button>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+
+                </div>
             </div>
         </div>
     </div>
