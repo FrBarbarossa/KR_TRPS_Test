@@ -30,7 +30,7 @@ function drop(ev) {
 
 function getFormPiece(type, question, position) {
     return `<div class="container list-group-item list-group-item-action list-group-item-secondary" name="form-piece"
-                         style="min-height:75px;" onclick="editPiece(event)">
+                         style="min-height:75px;" onclick="editPiece(${position})">
                         <div class="row">
                             <div class="col col-auto">
                                 <h5>${question}</h5>
@@ -41,7 +41,7 @@ function getFormPiece(type, question, position) {
                                 ${type}
                             </div>
                             <div class="col col-auto">
-                                <button type="button" class="btn btn-secondary" onclick="event.stopPropagation(); makeUp(${position})" id="up_btn">
+                                <button type="button" class="btn btn-secondary" onclick="event.stopPropagation(); makeUp(${position})" id="up_btn" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                          class="bi bi-chevron-up" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd"
@@ -73,7 +73,7 @@ function makeUp(pos) {
         form_data[pos] = tmp_data;
         console.log(form_data);
 
-        parentDiv[pos - 1].setAttribute("onclick", "editPiece(event)");
+        // parentDiv[pos - 1].setAttribute("onclick", `editPiece(${pos-1})`);
 
         parentDiv[pos - 1].querySelector('#down_btn').setAttribute("onclick", `event.stopPropagation(); makeDown(${pos - 1})`);
         parentDiv[pos].querySelector('#down_btn').setAttribute("onclick", `event.stopPropagation(); makeDown(${pos})`);
@@ -95,7 +95,7 @@ function makeDown(pos) {
         form_data[pos + 1] = tmp_data;
         console.log(form_data);
 
-        parentDiv[pos + 1].setAttribute("onclick", "editPiece(event)");
+        // parentDiv[pos + 1].setAttribute("onclick", `editPiece(${pos + 1})`);
         // parentDiv[pos].setAttribute("onclick", "editPiece(event)");
 
 
@@ -106,8 +106,174 @@ function makeDown(pos) {
     }
 }
 
-function editPiece(ev) {
-    console.log('Good!');
+function addPieceQestion(target, pos) {
+    if (document.getElementById('qestions_sandbox').lastElementChild == target.parentElement.parentElement) {
+        target.value = 'Ответ_' + (document.getElementById('qestions_sandbox').children.length -1);
+        document.getElementById('qestions_sandbox').insertAdjacentHTML('beforeend', `<div class="row">
+                                <div class="col align-self-center m-2">
+                                    <input type="text" class="form-control" placeholder="Ответ" aria-label="Ответ" onclick="addPieceQestion(this, ${pos})" name="answer">
+                                </div>
+                                <div class="col-auto align-self-center">
+                                    <button class='btn' onclick="deletePieceQuestion(this, ${pos})">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor"
+                                             class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>`);
+
+        // form_data[pos]['additional_elements'].push(target.value);
+        console.log(form_data[pos]['additional_elements']);
+    }
+}
+
+function deletePieceQuestion(target, pos) {
+    // let q_list = Array.prototype.slice.call(target.parentElement.parentElement.parentElement.children); // Now it's an Array.
+    // let index = q_list.indexOf(target.parentElement.parentElement); // The index of your element :)
+    // form_data[pos]['additional_elements'].splice(index, 1);
+    target.parentElement.parentElement.remove();
+}
+
+// Функция, которая отоборжает форму редактирования поля "едиственный выбор"
+function editChoseOneOf(pos) {
+    console.log(form_data[pos]['attributes']);
+    let first_elem = form_data[pos]['additional_elements'][0];
+    let feature_name = form_data[pos]['attributes']['feature_name'];
+    let quest = form_data[pos]['question'];
+    if (!feature_name) feature_name = '';
+    if (!first_elem) first_elem = 'Ответ_0';
+    document.getElementById('modal_content').innerHTML = `<div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Редактирование вопроса</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modal_body">
+
+                    <div class='container'>
+                        <div class="row">
+                            <h5>Вопрос</h5>
+                        </div>
+                        <div class="row m-2">
+                            <textarea class="form-control" aria-label="With textarea" id="quest">${quest}</textarea>
+                        </div>
+                        <p></p>
+                        <div class="row">
+                            <h5>Варианты ответов</h5>
+                        </div>
+                        <div class="row" id="qestions_sandbox">
+
+                            <div class="row">
+                                <div class="col align-self-center m-2">
+                                    <input type="text" class="form-control" placeholder="Ответ" aria-label="Ответ"
+                                           onclick="addPieceQestion(this, ${pos})" name="answer" value='${first_elem}'>
+                                </div>
+                                <div class="col-auto align-self-center">
+                                    <button class="btn" disabled>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor"
+                                             class="bi bi-trash-fill" viewBox="0 0 16 16" aria-hidden="true">
+                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h5>Параметры</h5>
+                        </div>
+                        <div class="row">
+                            <div class="row m-2">
+                                <input type="text" class="form-control"
+                                       placeholder="Идентефикатор в результирующем датасете (ex: feature_sample_name)"
+                                       aria-label="Идентефикатор в результирующем датасете"
+                                       id="result_name" value="${feature_name}">
+                            </div>
+                            <div class="row m-2">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                           id="required" unchecked>
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">Обязательный
+                                        вопрос</label>
+                                </div>
+                            </div>
+                            <div class="row m-2">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                           id="random" unchecked>
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">Случайный порядок
+                                        предложенных вариантов ответов</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить изменения</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="savePiece(${pos})">Сохранить</button>
+                </div>`
+    for (elem of form_data[pos]['additional_elements'].slice(1)){
+        document.getElementById('qestions_sandbox').insertAdjacentHTML('beforeend', `<div class="row">
+                                <div class="col align-self-center m-2">
+                                    <input type="text" class="form-control" placeholder="Ответ" aria-label="Ответ" onclick="addPieceQestion(this, ${pos})" name="answer" value='${elem}'>
+                                </div>
+                                <div class="col-auto align-self-center">
+                                    <button class='btn' onclick="deletePieceQuestion(this, ${pos})">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor"
+                                             class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>`);
+    }
+    document.getElementById('qestions_sandbox').insertAdjacentHTML('beforeend', `<div class="row">
+                                <div class="col align-self-center m-2">
+                                    <input type="text" class="form-control" placeholder="Ответ" aria-label="Ответ" onclick="addPieceQestion(this, ${pos})" name="answer"'>
+                                </div>
+                                <div class="col-auto align-self-center">
+                                    <button class='btn' onclick="deletePieceQuestion(this, ${pos})">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor"
+                                             class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>`);
+    document.getElementById("required").checked = form_data[pos]['attributes']['required'];
+    document.getElementById("random").checked = form_data[pos]['attributes']['random'];
+
+
+}
+
+function savePiece(pos) {
+    form_data[pos]['additional_elements'] = []
+    for (const elem of document.getElementsByName('answer')) {
+        if (elem.value) {
+            form_data[pos]['additional_elements'].push(elem.value);
+        }
+    }
+    form_data[pos]['question'] = document.getElementById('quest').value;
+    form_data[pos]['attributes'] = {
+        'feature_name': document.getElementById('result_name').value,
+        "required": document.getElementById('required').checked,
+        "random": document.getElementById('random').checked
+    }
+}
+
+function editPiece(pos) {
+    if (form_data[pos].type == 'chose') {
+        editChoseOneOf(pos);
+    }
+
+    const myModal = new bootstrap.Modal('#exampleModal');
+    myModal.show();
+    console.log(pos);
+    // document.getElementById('exampleModal').modal('show');
     return;
 }
 
