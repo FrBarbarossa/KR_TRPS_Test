@@ -1,6 +1,16 @@
 let form_data = [];
 let form_classifier = {
-    'chose': "<div class=\"list-group-item list-group-item-action list-group-item-secondary\" " + "style=\"min-height: 100px;\">" + "A simple secondary list group item</div>"
+    'chose':
+        `<div class="row">
+            <div class="col-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ui-radios" viewBox="0 0 16 16">
+                    <path d="M7 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zM0 12a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm7-1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zm0-5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 8a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM3 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                </svg>
+            </div>
+            <div class="col">
+                <p>Один вариант</p>
+            </div>
+        </div>`
 }
 
 function allowDrop(ev) {
@@ -28,17 +38,18 @@ function drop(ev) {
     }
 }
 
+// Получить часть формы (плитки)
 function getFormPiece(type, question, position) {
     return `<div class="container list-group-item list-group-item-action list-group-item-secondary" name="form-piece"
                          style="min-height:75px;" onclick="editPiece(${position})">
                         <div class="row">
                             <div class="col col-auto">
-                                <h5>${question}</h5>
+                                <h5 name="quest_header">${question}</h5>
                             </div>
                         </div>
                         <div class="row justify-content-between">
                             <div class="col col-auto">
-                                ${type}
+                                ${form_classifier['chose']}
                             </div>
                             <div class="col col-auto">
                                 <button type="button" class="btn btn-secondary" onclick="event.stopPropagation(); makeUp(${position})" id="up_btn" >
@@ -54,6 +65,14 @@ function getFormPiece(type, question, position) {
                                         <path fill-rule="evenodd"
                                               d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"></path>
                                     </svg>
+                                </button>
+                                
+                                <button type="button" class="btn btn-danger" onclick="event.stopPropagation(); deletePiece(this, ${position})" id="del_btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor"
+                                             class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                     </svg>
                                 </button>
                             </div>
                         </div>
@@ -74,6 +93,8 @@ function makeUp(pos) {
         console.log(form_data);
 
         // parentDiv[pos - 1].setAttribute("onclick", `editPiece(${pos-1})`);
+
+        parentDiv[pos-1].querySelector('#del_btn').setAttribute("onclick", `event.stopPropagation(); deletePiece(this, ${pos - 1})`);
 
         parentDiv[pos - 1].querySelector('#down_btn').setAttribute("onclick", `event.stopPropagation(); makeDown(${pos - 1})`);
         parentDiv[pos].querySelector('#down_btn').setAttribute("onclick", `event.stopPropagation(); makeDown(${pos})`);
@@ -98,6 +119,7 @@ function makeDown(pos) {
         // parentDiv[pos + 1].setAttribute("onclick", `editPiece(${pos + 1})`);
         // parentDiv[pos].setAttribute("onclick", "editPiece(event)");
 
+        parentDiv[pos+1].querySelector('#del_btn').setAttribute("onclick", `event.stopPropagation(); deletePiece(this, ${pos + 1})`);
 
         parentDiv[pos].querySelector('#down_btn').setAttribute("onclick", `event.stopPropagation(); makeDown(${pos})`);
         parentDiv[pos + 1].querySelector('#down_btn').setAttribute("onclick", `event.stopPropagation(); makeDown(${pos + 1})`);
@@ -106,12 +128,23 @@ function makeDown(pos) {
     }
 }
 
+function deletePiece(target, pos) {
+    for (let i = pos + 1; i < form_data.length; i++) {
+        makeUp(i);
+    }
+    document.getElementsByName("form-piece")[document.getElementsByName("form-piece").length-1].remove();
+    // target.parentElement.parentElement.parentElement.remove();
+    form_data.splice(-1, 1);
+
+}
+
+// Добавить вопрос в
 function addPieceQestion(target, pos) {
     if (document.getElementById('qestions_sandbox').lastElementChild == target.parentElement.parentElement) {
-        target.value = 'Ответ_' + (document.getElementById('qestions_sandbox').children.length -1);
+        target.value = 'Ответ_' + (document.getElementById('qestions_sandbox').children.length - 1);
         document.getElementById('qestions_sandbox').insertAdjacentHTML('beforeend', `<div class="row">
                                 <div class="col align-self-center m-2">
-                                    <input type="text" class="form-control" placeholder="Ответ" aria-label="Ответ" onclick="addPieceQestion(this, ${pos})" name="answer">
+                                    <input type="text" class="form-control" placeholder="Добавить вариант" aria-label="Ответ" onclick="addPieceQestion(this, ${pos})" name="answer">
                                 </div>
                                 <div class="col-auto align-self-center">
                                     <button class='btn' onclick="deletePieceQuestion(this, ${pos})">
@@ -151,6 +184,8 @@ function editChoseOneOf(pos) {
                 <div class="modal-body" id="modal_body">
 
                     <div class='container'>
+<!--                    Этот кусок нужно переписать, если функция будет обрабатывать не только "один из". Добавить вариативность от переданного типа вопроса-->
+                    ${form_classifier['chose']}
                         <div class="row">
                             <h5>Вопрос</h5>
                         </div>
@@ -165,7 +200,7 @@ function editChoseOneOf(pos) {
 
                             <div class="row">
                                 <div class="col align-self-center m-2">
-                                    <input type="text" class="form-control" placeholder="Ответ" aria-label="Ответ"
+                                    <input type="text" class="form-control" placeholder="Добавить вариант" aria-label="Ответ"
                                            onclick="addPieceQestion(this, ${pos})" name="answer" value='${first_elem}'>
                                 </div>
                                 <div class="col-auto align-self-center">
@@ -184,6 +219,7 @@ function editChoseOneOf(pos) {
                         </div>
                         <div class="row">
                             <div class="row m-2">
+                                <label for="result_name" class="form-label">Идентефикатор в результирующем датасете</label>
                                 <input type="text" class="form-control"
                                        placeholder="Идентефикатор в результирующем датасете (ex: feature_sample_name)"
                                        aria-label="Идентефикатор в результирующем датасете"
@@ -214,10 +250,10 @@ function editChoseOneOf(pos) {
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить изменения</button>
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="savePiece(${pos})">Сохранить</button>
                 </div>`
-    for (elem of form_data[pos]['additional_elements'].slice(1)){
+    for (elem of form_data[pos]['additional_elements'].slice(1)) {
         document.getElementById('qestions_sandbox').insertAdjacentHTML('beforeend', `<div class="row">
                                 <div class="col align-self-center m-2">
-                                    <input type="text" class="form-control" placeholder="Ответ" aria-label="Ответ" onclick="addPieceQestion(this, ${pos})" name="answer" value='${elem}'>
+                                    <input type="text" class="form-control" placeholder="Добавить враиант" aria-label="Ответ" onclick="addPieceQestion(this, ${pos})" name="answer" value='${elem}'>
                                 </div>
                                 <div class="col-auto align-self-center">
                                     <button class='btn' onclick="deletePieceQuestion(this, ${pos})">
@@ -232,7 +268,7 @@ function editChoseOneOf(pos) {
     }
     document.getElementById('qestions_sandbox').insertAdjacentHTML('beforeend', `<div class="row">
                                 <div class="col align-self-center m-2">
-                                    <input type="text" class="form-control" placeholder="Ответ" aria-label="Ответ" onclick="addPieceQestion(this, ${pos})" name="answer"'>
+                                    <input type="text" class="form-control" placeholder="Добавить вариант" aria-label="Ответ" onclick="addPieceQestion(this, ${pos})" name="answer"'>
                                 </div>
                                 <div class="col-auto align-self-center">
                                     <button class='btn' onclick="deletePieceQuestion(this, ${pos})">
@@ -263,6 +299,8 @@ function savePiece(pos) {
         "required": document.getElementById('required').checked,
         "random": document.getElementById('random').checked
     }
+    document.getElementsByName("quest_header")[pos].innerHTML = document.getElementById('quest').value;
+
 }
 
 function editPiece(pos) {
