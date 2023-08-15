@@ -6,6 +6,7 @@ from django.db.utils import IntegrityError
 from django.forms import formset_factory
 from .forms import *
 from django.contrib.auth.decorators import login_required, permission_required
+import json
 
 
 @login_required
@@ -49,6 +50,32 @@ def formset_test(request):
     return render(request, 'polls/form_test.html')
 
 
-def form_creation(request):
+def form_creation(request, id):
     return render(request, 'polls/form_creation.html')
+
+
+# Поменять, когда будет модель!!!! Если есть по данному id уже существующая форма - отдать её
+def form_get_config(request, id):
+    # Пример даннных, которые должна отдать модель (или не отдать ничего)
+    data = [{'type': 'chose', 'question': 'Other sample',
+             'attributes': {'feature_name': 'sample2', 'required': True, 'random': True},
+             'additional_elements': ['Ответ_0', 'Ответ_1', 'Ответ_2', 'Ответ_3']}, {'type': 'chose', 'question': 'Test',
+                                                                                    'attributes': {
+                                                                                        'feature_name': 'sample',
+                                                                                        'required': True,
+                                                                                        'random': False},
+                                                                                    'additional_elements': ['Ответ_0',
+                                                                                                            'Ответ_1',
+                                                                                                            'Ответ_2',
+                                                                                                            'Ответ_3']},
+            {'type': 'chose', 'question': 'Ваш вопрос1', 'attributes': {}, 'additional_elements': []}]
+    # data = None
+    return JsonResponse({"data": data}, status=200)
+
+
+def form_save_config(request, id):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        print(json.load(request))
+        print("!!!!")
+    return JsonResponse({'status': 'Gotcha', "some_param": True}, status=200)
 # Create your views here.
