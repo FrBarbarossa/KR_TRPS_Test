@@ -1,15 +1,19 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.contrib.auth.models import Permission, User
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views import View
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+
 
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 
 
 def home(request):
+    print(request.user)
     return render(request, 'users/home.html')
 
 
@@ -50,7 +54,6 @@ class CustomLoginView(LoginView):
 
     def form_valid(self, form):
         remember_me = form.cleaned_data.get('remember_me')
-
         if not remember_me:
             # set session expiry to 0 seconds. So it will automatically close the session after the browser is closed.
             self.request.session.set_expiry(0)
@@ -93,5 +96,7 @@ def profile(request):
     else:
         user_form = UpdateUserForm(instance=request.user)
         profile_form = UpdateProfileForm(instance=request.user.profile)
-
+        # request.user.user_permissions.add(Permission.objects.get(codename="view_profile")) # тестирование добавления роли
+        # print(request.user.get_user_permissions())
+        # print(request.user.has_perm("users.view_profile"))
     return render(request, 'users/profile.html', {'user_form': user_form, 'profile_form': profile_form})
