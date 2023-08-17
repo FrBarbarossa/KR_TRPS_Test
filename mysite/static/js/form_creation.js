@@ -1,4 +1,5 @@
 let form_data = [];
+
 window.onload = getOnloadConfig;
 window.setInterval(saveConfig, 15000);
 
@@ -29,7 +30,7 @@ function getOnloadConfig() {
             if (response.data) {
                 form_data = response.data;
                 for (let i = 0; i < form_data.length; i++) {
-                    document.getElementById('form_zone').insertAdjacentHTML('beforeend', getFormPiece(form_data[i]['type'],form_data[i]['question'], i));
+                    document.getElementById('form_zone').insertAdjacentHTML('beforeend', getFormPiece(form_data[i]['type'], form_data[i]['question'], i));
 
                 }
 
@@ -37,16 +38,16 @@ function getOnloadConfig() {
             } else {
                 form_data = []
             }
-
         },
         // on error
         error: function (response) {
             // alert the error if any error occured
             console.log("Not success message 2")
-            console.log(response.responseJSON.errors)
+            console.log(response.responseJSON)
         }
     });
 }
+
 
 function getCookie(c_name) {
     if (document.cookie.length > 0) {

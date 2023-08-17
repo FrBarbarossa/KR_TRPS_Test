@@ -47,4 +47,17 @@
     </form>
     <button class="add_form btn btn-primary">Добавить форму</button>
 
+
+    <form action="{% url 'polls:formset_test' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-error"></div>
+
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Default file input example</label>
+            <input class="form-control" type="file" id="formFile" name="myFile">
+        </div>
+        <button type="submit">Добавить</button>
+
+    </form>
 {% endblock content %}
