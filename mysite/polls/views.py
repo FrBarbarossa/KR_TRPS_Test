@@ -10,6 +10,8 @@ from .forms import *
 from .models import *
 from django.contrib.auth.decorators import login_required, permission_required
 import json
+import zipfile
+from django.core.files.base import ContentFile
 
 
 @login_required
@@ -60,7 +62,7 @@ def formset_test(request):
         #                                                                        'required': True,
         #                                                                        'random': False},
         #                                                                    'additional_elements': ['Ответ_0',
-        #                                                                                            'Ответ_1',
+        #                                     'Ответ_1',
         #                                                                                            'Ответ_2',
         #                                                                                            'Ответ_3']},
         #                                                                   {'type': 'chose', 'question': 'Ваш вопрос1',
@@ -69,8 +71,17 @@ def formset_test(request):
         pass
         # formSet = formset_factory(SurnameForm, extra=4)
     if request.method == "POST":
-        print(request.FILES)
-        Source(file_link=request.FILES['myFile'], s_type="IM", order=Order.objects.get(id=1),repeat_time_plan=2, repeat_time_fact=0).save()
+        if request.FILES['myFile'].content_type == 'application/zip':
+            with zipfile.ZipFile(request.FILES['myFile'], 'r') as myzip:
+                for filename in myzip.namelist()[1:]:
+                    with myzip.open(filename) as myfile:
+                        print(zipfile.Path(myzip, filename).name) # arcname/picture.jpeg -> picture.jpeg
+                        # name = f"order_{order_id}/" + zipfile.Path(myzip, filename).name
+                        # Source(file_link=ContentFile(myfile.read(), name="order_1/"+zipfile.Path(myzip, filename).name), s_type="IM", order=Order.objects.get(id=1), repeat_time_plan=2,
+                        #        repeat_time_fact=0).save()
+
+        # Source.objects.filter(order_id = 1).delete()
+        # Source(file_link=request.FILES['myFile'], s_type="IM", order=Order.objects.get(id=1),repeat_time_plan=2, repeat_time_fact=0).save()
         # return JsonResponse({'status': 'Invalid request', "some_param": True}, status=200)
         # formSet = formset_factory(NameForm, SurnameForm, extra=4)
     return render(request, 'polls/form_test.html')
