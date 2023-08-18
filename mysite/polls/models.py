@@ -16,8 +16,30 @@ class Person(models.Model):
 
 
 class Organization(models.Model):
-    name = models.CharField(unique=True, max_length=100, default='1')
+    CREATED = 'CR'
+    CONFIRMED = 'CD'
+    BANNED = 'BD'
+    # LOW MONEY & Co
+
+    STATUS_CHOICES = [
+        (CREATED, 'Created'),
+        (CONFIRMED, 'CD'),
+        (BANNED, 'Banned'),
+
+    ]
+    name = models.CharField(unique=True, max_length=100, default='1' )
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    bio = models.CharField(unique=True, max_length=1000, default='No bio')
+    balance = models.DecimalField(max_digits=19, decimal_places=4)
+    status = models.CharField(
+        max_length=2,
+        choices=STATUS_CHOICES,
+        default=CREATED
+    )
+    email = models.EmailField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    #default timezone.now
 
 
 # Create your models here.

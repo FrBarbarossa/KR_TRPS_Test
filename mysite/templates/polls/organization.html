@@ -1,0 +1,48 @@
+{% extends "src/base.html" %}
+{% load i18n %}
+{% block title %}Организация{% endblock title %}
+{% block content %}
+    {% if org_form.errors %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <div id="form_errors">
+                {% for key, value in org_form.errors.items %}
+                    <strong>{% blocktranslate %}{{ value }}{% endblocktranslate %}</strong>
+                {% endfor %}
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+        </div>
+    {% endif %}
+    <div class="form-content">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="col-md-5">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Название организации</span>
+                        {{ org_form.name }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-5">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Email контактного лица</span>
+                        {{ org_form.email }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-5">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Описание организации</span>
+                        {{ org_form.bio }}
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            <button type="submit" class="btn btn-dark btn-lg">Сохранить изменения</button>
+            <button type="reset" class="btn btn-dark btn-lg">Сбросить изменения</button>
+        </form>
+    </div>
+{% endblock content %}

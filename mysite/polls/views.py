@@ -1,16 +1,19 @@
 import datetime
 
 from django.shortcuts import render
-from .models import Person
+from polls.models import *
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.db.utils import IntegrityError
 from django.forms import formset_factory
 from .forms import *
 from .models import *
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required, permission_required
 import json
 import zipfile
+from .forms import OrgForm
 from django.core.files.base import ContentFile
 
 
@@ -19,6 +22,18 @@ from django.core.files.base import ContentFile
                      raise_exception=True)  # Всё, что в списке - необходимые одновременно разрешения
 def index(request):
     return render(request, 'polls/index.html')
+
+@login_required
+def orgranization(request):
+    if request.method == "POST":
+        org_form = OrgForm(request.POST,instance=Organization.objects.get(profile=request.user.profile))
+        if org_form.is_valid():
+            print('ITS VALID!')
+            print(org_form.cleaned_data)
+            return HttpResponseRedirect(reverse("polls:organization"))
+    else:
+        org_form = OrgForm(instance=Organization.objects.get(profile=request.user.profile))
+    return render(request, 'polls/organization.html', {'org_form': org_form})
 
 
 def postcard(request):
@@ -75,7 +90,7 @@ def formset_test(request):
             with zipfile.ZipFile(request.FILES['myFile'], 'r') as myzip:
                 for filename in myzip.namelist()[1:]:
                     with myzip.open(filename) as myfile:
-                        print(zipfile.Path(myzip, filename).name) # arcname/picture.jpeg -> picture.jpeg
+                        print(zipfile.Path(myzip, filename).name)  # arcname/picture.jpeg -> picture.jpeg
                         # name = f"order_{order_id}/" + zipfile.Path(myzip, filename).name
                         # Source(file_link=ContentFile(myfile.read(), name="order_1/"+zipfile.Path(myzip, filename).name), s_type="IM", order=Order.objects.get(id=1), repeat_time_plan=2,
                         #        repeat_time_fact=0).save()
