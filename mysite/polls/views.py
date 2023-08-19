@@ -35,7 +35,7 @@ def orgranization(request, org_id):
         if org_form.is_valid():
             print('ITS VALID!')
             print(org_form.cleaned_data)
-            return HttpResponseRedirect(reverse("polls:organization"))
+            return HttpResponseRedirect(reverse("polls:organization", args={"org_id": org_id}))
     else:
         org_form = OrgForm(instance=Organization.objects.get(profile=request.user.profile))
     orders = Order.objects.filter(org_id=org_id)
@@ -43,6 +43,9 @@ def orgranization(request, org_id):
         print(i.id)
     return render(request, 'polls/organization.html', {'org_form': org_form, "orders": orders})
 
+def change_order_balance(request, order_id, delta):
+    print(request.user, order_id, delta)
+    return JsonResponse({'status': 'Invalid request', "some_param": True}, status=200)
 
 def postcard(request):
     print(request.POST['pername'])
@@ -136,6 +139,7 @@ def form_get_config(request, id):
 def form_save_config(request, id):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         print(json.load(request))
+        print(request.user.id)
     return JsonResponse({'status': 'Gotcha', "some_param": True}, status=200)
 
 
