@@ -28,8 +28,8 @@ class Organization(models.Model):
 
     ]
     name = models.CharField(unique=True, max_length=100, default='1' )
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    bio = models.CharField(unique=True, max_length=1000, default='No bio')
+    profile = models.ForeignKey(Profile, unique=True, on_delete=models.CASCADE)
+    bio = models.CharField(max_length=1000, default='No bio')
     balance = models.DecimalField(max_digits=19, decimal_places=4)
     status = models.CharField(
         max_length=2,

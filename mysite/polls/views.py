@@ -15,6 +15,7 @@ import json
 import zipfile
 from .forms import OrgForm
 from django.core.files.base import ContentFile
+from django.core.exceptions import PermissionDenied
 
 
 @login_required
@@ -23,17 +24,24 @@ from django.core.files.base import ContentFile
 def index(request):
     return render(request, 'polls/index.html')
 
+
 @login_required
-def orgranization(request):
+def orgranization(request, org_id):
+    # Проверка, что организация принадлежит пользователю
+    if org_id != Organization.objects.filter(profile=request.user.profile)[0].id:
+        raise PermissionDenied()
     if request.method == "POST":
-        org_form = OrgForm(request.POST,instance=Organization.objects.get(profile=request.user.profile))
+        org_form = OrgForm(request.POST, instance=Organization.objects.get(profile=request.user.profile))
         if org_form.is_valid():
             print('ITS VALID!')
             print(org_form.cleaned_data)
             return HttpResponseRedirect(reverse("polls:organization"))
     else:
         org_form = OrgForm(instance=Organization.objects.get(profile=request.user.profile))
-    return render(request, 'polls/organization.html', {'org_form': org_form})
+    orders = Order.objects.filter(org_id=org_id)
+    for i in orders:
+        print(i.id)
+    return render(request, 'polls/organization.html', {'org_form': org_form, "orders": orders})
 
 
 def postcard(request):
@@ -62,7 +70,7 @@ def formset_test(request):
     print("In formset_test")
     if request.method == "GET":
         # joe = Author.objects.create(name="Joe")
-        # Organization(name='test_org').save()
+        # Organization(name='test_org2', profile_id=4, balance=0).save()
         # Order(org_id=Organization.objects.get(id=1), balance=100, task_cost=0.02).save()
         # Form(order_id=1, is_active=True, duration=datetime.timedelta(minutes=15), repeat_times=5, data=[{'type': 'chose', 'question': 'Other sample',
         #                                                                    'attributes': {'feature_name': 'sample2',
