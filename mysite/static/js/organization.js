@@ -13,22 +13,47 @@ function changeOrderBalance(order_id, delta) {
 
         // on success
         success: function (response) {
-            if (response.some_param) {
-                // form_data = response.data;
-                // for (let i = 0; i < form_data.length; i++) {
-                //     document.getElementById('form_zone').insertAdjacentHTML('beforeend', getFormPiece(form_data[i]['type'],form_data[i]['question'], i));
-                //
-                // }
-                console.log(response.some_param);
+            if (response.orders) {
+                let orders = JSON.parse(response.orders);
+                // console.log(orders[0]);
+                for (let i = 0; i < orders.length; i++) {
+                    console.log(orders[i]);
+                    document.getElementById(orders[i]['pk']).innerText = orders[i]['fields']['balance'];
+                }
+                document.getElementById('org_balance').innerText = response.organization;
+                console.log(response.organization);
+                console.log(response.orders);
 
             } else {
                 console.log('nodata');
-                form_data = []
             }
 
         }
     })
 }
+
+function topUpBalance(org_id) {
+    $.ajax({
+        headers: {"X-CSRFToken": getCookie("csrftoken")},
+        url: `/polls/top_up_balance/${org_id}`,
+        type: "POST",
+        processData: false,
+        contentType: "application/json; charset=UTF-8",
+        // on success
+        success: function (response) {
+            if (response.organization) {
+                document.getElementById('org_balance').innerText = response.organization;
+                console.log(response.organization);
+                console.log(response.orders);
+
+            } else {
+                console.log('nodata');
+            }
+
+        }
+    })
+}
+
 
 function getCookie(c_name) {
     if (document.cookie.length > 0) {

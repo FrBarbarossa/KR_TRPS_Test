@@ -16,6 +16,7 @@ import zipfile
 from .forms import OrgForm
 from django.core.files.base import ContentFile
 from django.core.exceptions import PermissionDenied
+from django.core import serializers
 
 
 @login_required
@@ -37,7 +38,7 @@ def orgranization(request, org_id):
         if org_form.is_valid():
             print('ITS VALID!')
             print(org_form.cleaned_data)
-            return HttpResponseRedirect(reverse("polls:organization", args={"org_id": org_id}))
+            return HttpResponseRedirect(reverse("polls:organization", kwargs={"org_id": org_id}))
     else:
         org_form = OrgForm(instance=Organization.objects.get(profile=request.user.profile))
     orders = Order.objects.filter(org_id=org_id)
@@ -46,19 +47,32 @@ def orgranization(request, org_id):
                   {'org_form': org_form, "orders": orders, 'organization': organization})
 
 
+def top_up_balance(request, org_id):
+    if not Organization.objects.filter(id=org_id) or not Organization.objects.filter(profile=request.user.profile):
+        raise PermissionDenied()
+    if org_id != Organization.objects.filter(profile=request.user.profile)[0].id:
+        raise PermissionDenied()
+    organization = Organization.objects.get(id=org_id)
+    organization.balance += 500
+    organization.save()
+    return JsonResponse(data={'organization': organization.balance}, status=200)
+
+
 def change_order_balance(request, order_id):
-    if not Order.objects.filter(id=order_id) and not Organization.objects.filter(profile=request.user.profile):
+    if not Order.objects.filter(id=order_id) or not Organization.objects.filter(profile=request.user.profile):
         raise PermissionDenied()
     if Organization.objects.get(profile=request.user.profile) == Order.objects.get(id=order_id).org:
         delta = json.load(request)['delta']
         print(delta)
+
         order = Order.objects.get(id=order_id)
+        print(order.org.balance)
         if delta > 0:
             if order.org.balance >= delta:
                 order.org.balance -= delta
                 order.balance += delta
             if order.org.balance < delta:
-                order.balance += order_id.org.balance
+                order.balance += order.org.balance
                 order.org.balance = 0
         if delta < 0:
             if order.balance >= abs(delta):
@@ -69,9 +83,13 @@ def change_order_balance(request, order_id):
                 order.balance = 0
         order.save()
         order.org.save()
+        orders = serializers.serialize('json', Order.objects.filter(org=Order.objects.get(id=order_id).org),
+                                       fields=['io', 'balance'])
+        organization = order.org.balance
+
         # new_balance = json.load(request)['delta']
         # print(request.user, order_id, json.load(request)['delta'])
-    return JsonResponse(data={"some_param": True}, status=200)
+        return JsonResponse(data={"orders": orders, 'organization': organization}, status=200)
 
 
 def postcard(request):
