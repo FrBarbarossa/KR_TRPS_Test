@@ -1,4 +1,9 @@
 let form_data = [];
+
+window.onload = getOnloadConfig;
+window.setInterval(saveConfig, 15000);
+
+
 let form_classifier = {
     'chose':
         `<div class="row">
@@ -11,6 +16,77 @@ let form_classifier = {
                 <p>Один вариант</p>
             </div>
         </div>`
+}
+
+function getOnloadConfig() {
+    $.ajax({
+        headers: {"X-CSRFToken": getCookie("csrftoken")},
+        url: `${window.location.href}get_configuration/`,
+        type: "GET",
+        processData: false,
+        contentType: "application/json; charset=UTF-8",
+        // on success
+        success: function (response) {
+            if (response.data) {
+                form_data = response.data;
+                for (let i = 0; i < form_data.length; i++) {
+                    document.getElementById('form_zone').insertAdjacentHTML('beforeend', getFormPiece(form_data[i]['type'], form_data[i]['question'], i));
+
+                }
+
+
+            } else {
+                form_data = []
+            }
+        },
+        // on error
+        error: function (response) {
+            // alert the error if any error occured
+            console.log("Not success message 2")
+            console.log(response.responseJSON)
+        }
+    });
+}
+
+
+function getCookie(c_name) {
+    if (document.cookie.length > 0) {
+        let c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1) {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) c_end = document.cookie.length;
+            return unescape(document.cookie.substring(c_start, c_end));
+        }
+    }
+    return "";
+}
+
+function saveConfig() {
+    // here is ajax
+    $.ajax({
+        headers: {"X-CSRFToken": getCookie("csrftoken")},
+        url: `${window.location.href}save_config/`,
+        type: "POST",
+        processData: false,
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify(form_data), // get the form data
+        // on success
+        success: function (response) {
+            if (response.some_param == true) {
+                console.log("Success message")
+            } else {
+                console.log("Not success message")
+            }
+
+        },
+        // on error
+        error: function (response) {
+            // alert the error if any error occured
+            console.log("Not success message 2")
+            console.log(response.responseJSON.errors)
+        }
+    });
 }
 
 function allowDrop(ev) {
@@ -42,12 +118,12 @@ function drop(ev) {
 function getFormPiece(type, question, position) {
     return `<div class="container list-group-item list-group-item-action list-group-item-secondary" name="form-piece"
                          style="min-height:75px;" onclick="editPiece(${position})">
-                        <div class="row">
+                        <div class="row m-1">
                             <div class="col col-auto">
                                 <h5 name="quest_header">${question}</h5>
                             </div>
                         </div>
-                        <div class="row justify-content-between">
+                        <div class="row justify-content-between m-1">
                             <div class="col col-auto">
                                 ${form_classifier['chose']}
                             </div>
@@ -94,7 +170,7 @@ function makeUp(pos) {
 
         // parentDiv[pos - 1].setAttribute("onclick", `editPiece(${pos-1})`);
 
-        parentDiv[pos-1].querySelector('#del_btn').setAttribute("onclick", `event.stopPropagation(); deletePiece(this, ${pos - 1})`);
+        parentDiv[pos - 1].querySelector('#del_btn').setAttribute("onclick", `event.stopPropagation(); deletePiece(this, ${pos - 1})`);
 
         parentDiv[pos - 1].querySelector('#down_btn').setAttribute("onclick", `event.stopPropagation(); makeDown(${pos - 1})`);
         parentDiv[pos].querySelector('#down_btn').setAttribute("onclick", `event.stopPropagation(); makeDown(${pos})`);
@@ -119,7 +195,7 @@ function makeDown(pos) {
         // parentDiv[pos + 1].setAttribute("onclick", `editPiece(${pos + 1})`);
         // parentDiv[pos].setAttribute("onclick", "editPiece(event)");
 
-        parentDiv[pos+1].querySelector('#del_btn').setAttribute("onclick", `event.stopPropagation(); deletePiece(this, ${pos + 1})`);
+        parentDiv[pos + 1].querySelector('#del_btn').setAttribute("onclick", `event.stopPropagation(); deletePiece(this, ${pos + 1})`);
 
         parentDiv[pos].querySelector('#down_btn').setAttribute("onclick", `event.stopPropagation(); makeDown(${pos})`);
         parentDiv[pos + 1].querySelector('#down_btn').setAttribute("onclick", `event.stopPropagation(); makeDown(${pos + 1})`);
@@ -132,13 +208,13 @@ function deletePiece(target, pos) {
     for (let i = pos + 1; i < form_data.length; i++) {
         makeUp(i);
     }
-    document.getElementsByName("form-piece")[document.getElementsByName("form-piece").length-1].remove();
+    document.getElementsByName("form-piece")[document.getElementsByName("form-piece").length - 1].remove();
     // target.parentElement.parentElement.parentElement.remove();
     form_data.splice(-1, 1);
 
 }
 
-// Добавить вопрос в
+// Добавить вариант ответа в вопрос
 function addPieceQestion(target, pos) {
     if (document.getElementById('qestions_sandbox').lastElementChild == target.parentElement.parentElement) {
         target.value = 'Ответ_' + (document.getElementById('qestions_sandbox').children.length - 1);
@@ -286,6 +362,7 @@ function editChoseOneOf(pos) {
 
 }
 
+// Функция сохраняет параметры вопроса
 function savePiece(pos) {
     form_data[pos]['additional_elements'] = []
     for (const elem of document.getElementsByName('answer')) {
@@ -303,6 +380,7 @@ function savePiece(pos) {
 
 }
 
+// Функция открывает модальное окно, выбирает функцию наполнения в соответствии с типом
 function editPiece(pos) {
     if (form_data[pos].type == 'chose') {
         editChoseOneOf(pos);

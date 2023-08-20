@@ -1,0 +1,121 @@
+{% extends "src/base.html" %}
+{% load i18n %}
+{% block title %}Организация{% endblock title %}
+{% load static %}
+
+{% block js_add %}
+    <script src="{% static 'js/organization.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        {% if org_form.errors %}
+            <div class='row'>
+
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <div id="form_errors">
+                        {% for key, value in org_form.errors.items %}
+                            <strong>{% blocktranslate %}{{ value }}{% endblocktranslate %}</strong>
+                        {% endfor %}
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-6">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Название организации</span>
+                            {{ org_form.name }}
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Email контактного лица</span>
+                            {{ org_form.email }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Описание организации</span>
+                            {{ org_form.bio }}
+                        </div>
+                    </div>
+                    <br><br>
+                    <div class="row">
+                        <div class="col">
+                            <button type="submit" class="btn btn-success btn-lg">Сохранить изменения</button>
+
+                        </div>
+                        <div class="col">
+                            <button type="reset" class="btn btn-warning btn-lg">Сбросить изменения</button>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h4>Баланс организации:</h4>
+                    </div>
+                    <div class="col">
+                        <h4 id="org_balance" class="text-success">{{ organization.balance }}</h4>
+                    </div>
+
+                    <div class="col">
+                        <button onclick="topUpBalance({{ organization.id }})">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-wallet2" viewBox="0 0 16 16">
+                                <path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499L12.136.326zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484L5.562 3zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-13z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            <br>
+            <br>
+                <div class="row">
+                    <div class="col-3">
+                        <h4>ID заказа</h4>
+                    </div>
+                    <div class="col-4">
+                        <h4>Баланс</h4>
+                    </div>
+                    <div class="col-5">
+                        <h4>Действия</h4>
+                    </div>
+                </div>
+                {% for value in orders %}
+                    <div class="row">
+                        <div class="col-3">
+                            <h5>{{ value.id }}</h5>
+                        </div>
+                        <div class="col-4">
+                            <h5 id="{{ value.id }}">{{ value.balance }}</h5>
+                        </div>
+                        <div class="col-5">
+                            <div class="row">
+                                <div class="col-auto">
+                                    <button class="btn btn-success"
+                                            onclick="changeOrderBalance({{ value.id }},100)">+100
+                                    </button>
+                                </div>
+                                <div class="col-auto">
+                                    <button class="btn btn-warning"
+                                            onclick="changeOrderBalance({{ value.id }},-100)">-100
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+{% endblock content %}

@@ -96,7 +96,7 @@ def profile(request):
     else:
         user_form = UpdateUserForm(instance=request.user)
         profile_form = UpdateProfileForm(instance=request.user.profile)
-        # request.user.user_permissions.add(Permission.objects.get(codename="view_profile")) # тестирование добавления роли
+        # request.user.user_permissions.add(Permission.objects.get(codename="view_profile")) # тестирование добавления
         # print(request.user.get_user_permissions())
         # print(request.user.has_perm("users.view_profile"))
     return render(request, 'users/profile.html', {'user_form': user_form, 'profile_form': profile_form})
