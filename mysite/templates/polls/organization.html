@@ -60,7 +60,7 @@
             </div>
             <div class="col">
                 <div class="row">
-                    <p>Balance</p>
+                    <p>{{ organization.balance }}</p>
                 </div>
                 <div class="row">
                     <div class="col-3">
@@ -89,7 +89,9 @@
                                     </button>
                                 </div>
                                 <div class="col">
-                                    <button class="btn btn-warning">-100</button>
+                                    <button class="btn btn-warning"
+                                            onclick="changeOrderBalance({{ value.id }},-100)">-100
+                                    </button>
                                 </div>
                             </div>
                         </div>

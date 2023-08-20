@@ -28,6 +28,8 @@ def index(request):
 @login_required
 def orgranization(request, org_id):
     # Проверка, что организация принадлежит пользователю
+    if not Organization.objects.filter(id=org_id):
+        raise PermissionDenied()
     if org_id != Organization.objects.filter(profile=request.user.profile)[0].id:
         raise PermissionDenied()
     if request.method == "POST":
@@ -39,13 +41,38 @@ def orgranization(request, org_id):
     else:
         org_form = OrgForm(instance=Organization.objects.get(profile=request.user.profile))
     orders = Order.objects.filter(org_id=org_id)
-    for i in orders:
-        print(i.id)
-    return render(request, 'polls/organization.html', {'org_form': org_form, "orders": orders})
+    organization = Organization.objects.get(id=org_id)
+    return render(request, 'polls/organization.html',
+                  {'org_form': org_form, "orders": orders, 'organization': organization})
 
-def change_order_balance(request, order_id, delta):
-    print(request.user, order_id, delta)
-    return JsonResponse({'status': 'Invalid request', "some_param": True}, status=200)
+
+def change_order_balance(request, order_id):
+    if not Order.objects.filter(id=order_id) and not Organization.objects.filter(profile=request.user.profile):
+        raise PermissionDenied()
+    if Organization.objects.get(profile=request.user.profile) == Order.objects.get(id=order_id).org:
+        delta = json.load(request)['delta']
+        print(delta)
+        order = Order.objects.get(id=order_id)
+        if delta > 0:
+            if order.org.balance >= delta:
+                order.org.balance -= delta
+                order.balance += delta
+            if order.org.balance < delta:
+                order.balance += order_id.org.balance
+                order.org.balance = 0
+        if delta < 0:
+            if order.balance >= abs(delta):
+                order.balance += delta
+                order.org.balance += abs(delta)
+            else:
+                order.org.balance += order.balance
+                order.balance = 0
+        order.save()
+        order.org.save()
+        # new_balance = json.load(request)['delta']
+        # print(request.user, order_id, json.load(request)['delta'])
+    return JsonResponse(data={"some_param": True}, status=200)
+
 
 def postcard(request):
     print(request.POST['pername'])

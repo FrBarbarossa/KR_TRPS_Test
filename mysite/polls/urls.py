@@ -13,5 +13,5 @@ urlpatterns = [
     path('form_creation/<int:id>/get_configuration/', views.form_get_config, name='form_get_config'),
     path('task_emplementation/<int:id>/get_configureation', views.task_get_config, name='task_get_config'),
     path('organization/<int:org_id>', views.orgranization, name='organization'),
-    path('change_order_balance/<int:order_id>/<int:delta>', views.change_order_balance, name='change_order_balance')
+    path('change_order_balance/<int:order_id>', views.change_order_balance, name='change_order_balance')
 ]

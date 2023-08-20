@@ -5,21 +5,24 @@
 function changeOrderBalance(order_id, delta) {
     $.ajax({
         headers: {"X-CSRFToken": getCookie("csrftoken")},
-        url: `/polls/change_order_balance/${order_id}/${delta}`,
+        url: `/polls/change_order_balance/${order_id}`,
         type: "POST",
         processData: false,
         contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({"delta": delta}), // get the form data
+
         // on success
         success: function (response) {
-            if (response.data) {
+            if (response.some_param) {
                 // form_data = response.data;
                 // for (let i = 0; i < form_data.length; i++) {
                 //     document.getElementById('form_zone').insertAdjacentHTML('beforeend', getFormPiece(form_data[i]['type'],form_data[i]['question'], i));
                 //
                 // }
-                console.log(response.data);
+                console.log(response.some_param);
 
             } else {
+                console.log('nodata');
                 form_data = []
             }
 
