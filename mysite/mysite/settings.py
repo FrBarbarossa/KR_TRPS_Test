@@ -25,6 +25,7 @@ SECRET_KEY = 'django-insecure-ayq@i1o$ixfmgylsxk)zoj$h(p_yco-ca&ro2#(zfjz$#tvb0^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+CKEDITOR_UPLOAD_PATH ='instruction_uploads/'
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -40,7 +41,8 @@ INSTALLED_APPS = [
     'bootstrap5',
     'django_extensions',
     'users.apps.UserConfig',
-    'social_django'
+    'social_django',
+    'ckeditor'
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

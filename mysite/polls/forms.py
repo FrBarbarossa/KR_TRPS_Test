@@ -2,6 +2,7 @@ from django import forms
 from polls.models import *
 
 
+
 class NameForm(forms.Form):
     your_name = forms.CharField(label="Your name", max_length=100)
 
@@ -45,3 +46,8 @@ class OrgForm(forms.ModelForm):
     class Meta:
         model = Organization
         fields = ["name", "bio", "email"]
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['instruction']

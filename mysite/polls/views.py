@@ -92,6 +92,63 @@ def change_order_balance(request, order_id):
         return JsonResponse(data={"orders": orders, 'organization': organization}, status=200)
 
 
+def order(request, order_id):
+    if Order.objects.get(id=order_id).org.profile.user != request.user:
+        raise PermissionDenied()
+    order = Order.objects.get(id=order_id)
+    # print(Form.objects.filter(order=order).values())
+    # forms = Form.objects.filter(order=order).values()
+
+    forms = list(Form.objects.filter(order=order).order_by('id').values())
+    for i in range(len(forms)):
+        # print(test[i])
+        form_id = forms[i]['id']
+        tasks = Task.objects.filter(form=Form.objects.get(id=form_id))
+        length = 0
+        for j in tasks:
+            length += len(j.answer_set.all())
+        forms[i]['answers'] = length
+    print(forms)
+    if request.method == "POST":
+        form = OrderForm(request.POST, instance=order)
+        if form.is_valid():
+            print('ITS VALID!')
+            form.save(commit=True)
+    else:
+        form = OrderForm(instance=order)
+    return render(request, 'polls/order.html', {"order": order,
+                                                "form": form,
+                                                'forms': forms})
+
+
+def change_order_status(request, order_id, status):
+    order = Order.objects.get(id=order_id)
+    if status == 'CR':
+        order.status = 'PB'
+    if status == "PB":
+        order.status = 'CR'
+    order.save()
+    return HttpResponseRedirect(reverse("polls:order", kwargs={'order_id': order_id}))
+
+
+# Создать новую форму для заказа
+def create_new_form(request, order_id):
+    form = Form(order_id=order_id, is_active=False, duration=datetime.timedelta(minutes=15), repeat_times=1)
+    form.save()
+    return HttpResponseRedirect(reverse("polls:form_creation", kwargs={'id': form.id}))
+
+
+def make_active_form(request, form_id):
+    form = Form.objects.get(id=form_id)
+    order = form.order
+    for f in order.form_set.all():
+        f.is_active = False
+        f.save()
+    form.is_active = True
+    form.save()
+    return HttpResponseRedirect(reverse("polls:order", kwargs={'order_id': order.id}))
+
+
 def postcard(request):
     print(request.POST['pername'])
     print(request.POST)
@@ -159,32 +216,40 @@ def formset_test(request):
 
 
 def form_creation(request, id):
-    return render(request, 'polls/form_creation.html')
+    return render(request, 'polls/form_creation.html', {"id": id})
 
 
 # Поменять, когда будет модель!!!! Если есть по данному id уже существующая форма - отдать её
 def form_get_config(request, id):
+    if Form.objects.get(id=id).order.org.profile.user != request.user:
+        raise PermissionDenied()
     # Пример даннных, которые должна отдать модель (или не отдать ничего)
-    data = [{'type': 'chose', 'question': 'Other sample',
-             'attributes': {'feature_name': 'sample2', 'required': True, 'random': True},
-             'additional_elements': ['Ответ_0', 'Ответ_1', 'Ответ_2', 'Ответ_3']}, {'type': 'chose', 'question': 'Test',
-                                                                                    'attributes': {
-                                                                                        'feature_name': 'sample',
-                                                                                        'required': True,
-                                                                                        'random': False},
-                                                                                    'additional_elements': ['Ответ_0',
-                                                                                                            'Ответ_1',
-                                                                                                            'Ответ_2',
-                                                                                                            'Ответ_3']},
-            {'type': 'chose', 'question': 'Ваш вопрос1', 'attributes': {}, 'additional_elements': []}]
-    # data = None
+    # data = [{'type': 'chose', 'question': 'Other sample',
+    #          'attributes': {'feature_name': 'sample2', 'required': True, 'random': True},
+    #          'additional_elements': ['Ответ_0', 'Ответ_1', 'Ответ_2', 'Ответ_3']}, {'type': 'chose', 'question': 'Test',
+    #                                                                                 'attributes': {
+    #                                                                                     'feature_name': 'sample',
+    #                                                                                     'required': True,
+    #                                                                                     'random': False},
+    #                                                                                 'additional_elements': ['Ответ_0',
+    #                                                                                                         'Ответ_1',
+    #                                                                                                         'Ответ_2',
+    #                                                                                                         'Ответ_3']},
+    #         {'type': 'chose', 'question': 'Ваш вопрос1', 'attributes': {}, 'additional_elements': []}]
+    # data = serializers.serialize('json', Form.objects.filter(id=id))
+    data = list(Form.objects.filter(id=id).values('data'))[0]['data']
+    print(data)
     return JsonResponse({"data": data}, status=200)
 
 
 def form_save_config(request, id):
+    if Form.objects.get(id=id).order.org.profile.user != request.user:
+        raise PermissionDenied()
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        print(json.load(request))
-        print(request.user.id)
+        form = Form.objects.get(id=id)
+        form.data = json.load(request)
+        form.save()
+        print("!")
     return JsonResponse({'status': 'Gotcha', "some_param": True}, status=200)
 
 

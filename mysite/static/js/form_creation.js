@@ -29,6 +29,7 @@ function getOnloadConfig() {
         success: function (response) {
             if (response.data) {
                 form_data = response.data;
+                console.log(response.data);
                 for (let i = 0; i < form_data.length; i++) {
                     document.getElementById('form_zone').insertAdjacentHTML('beforeend', getFormPiece(form_data[i]['type'], form_data[i]['question'], i));
 
@@ -42,8 +43,10 @@ function getOnloadConfig() {
         // on error
         error: function (response) {
             // alert the error if any error occured
-            console.log("Not success message 2")
-            console.log(response.responseJSON)
+            console.log("Not success message 2");
+            console.log(response.responseJSON);
+            window.location.replace(document.referrer);
+            alert('Error 403 forbidden');
         }
     });
 }
@@ -83,8 +86,10 @@ function saveConfig() {
         // on error
         error: function (response) {
             // alert the error if any error occured
-            console.log("Not success message 2")
-            console.log(response.responseJSON.errors)
+            console.log("Not success message 2");
+            console.log(response.responseJSON.errors);
+            window.location.replace(document.referrer);
+            alert('Error 403 forbidden');
         }
     });
 }

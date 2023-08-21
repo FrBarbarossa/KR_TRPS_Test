@@ -1,6 +1,8 @@
 from django.db import models
 import time
 from users.models import Profile
+from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 
 
 def user_directory_path(instance, filename):
@@ -63,13 +65,14 @@ class Order(models.Model):
         choices=STATUS_CHOICES,
         default=CREATED
     )
+    instruction = RichTextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
 
 class Form(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    data = models.JSONField()
+    data = models.JSONField(null=True)
     is_active = models.BooleanField(default=False)
     duration = models.DurationField()
     repeat_times = models.PositiveSmallIntegerField()
