@@ -86,6 +86,7 @@ class Source(models.Model):
         ("VD", "Videos"),
     ]
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    source_file_name = models.CharField(max_length=200)
     file_link = models.FileField(upload_to=user_directory_path)
     s_type = models.CharField(max_length=2, choices=TYPES)
     repeat_time_plan = models.PositiveSmallIntegerField()

@@ -106,7 +106,18 @@
                             <h6>{{ value.duration }}</h6>
                         </div>
                         <div class="col-1">
-                            <h6>{{ value.answers }}</h6>
+                            <div class="row">
+                                <div class="col-auto">
+                                    <h6>{{ value.answers }}</h6>
+                                </div>
+                                <div class="col-auto">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                         class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
+                                        <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z"/>
+                                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-auto">
                             {% if value.is_active %}
@@ -123,7 +134,39 @@
                 {% endfor %}
             </div>
         </div>
+        <div class='row'>
+            <div class="col-5">
+                <form action="/polls/order/{{ order.id }}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
 
+                    <div class="form-error"></div>
+
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">Загрузите архив с исходными данными для разметки в формате .zip</label>
+                        <input class="form-control" type="file" id="formFile" name="myFile">
+                    </div>
+                    <button type="submit">Добавить</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-1 me-4">
+                <h4>Разметить</h4>
+            </div>
+            <div class="col-4">
+                <h4>Имя загруженного файла с данными</h4>
+            </div>
+        </div>
+        {% for source in sources %}
+            <div class="row">
+                <div class="col-1 me-4">
+
+                </div>
+                <div class="col-4">
+                    <h5>{{ source.source_file_name }}</h5>
+                </div>
+            </div>
+        {% endfor %}
 
         <form method="post">
             <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"

@@ -1,4 +1,5 @@
 import datetime
+import os
 
 from django.shortcuts import render
 from polls.models import *
@@ -17,6 +18,7 @@ from .forms import OrgForm
 from django.core.files.base import ContentFile
 from django.core.exceptions import PermissionDenied
 from django.core import serializers
+from django.conf import settings
 
 
 @login_required
@@ -92,13 +94,17 @@ def change_order_balance(request, order_id):
         return JsonResponse(data={"orders": orders, 'organization': organization}, status=200)
 
 
+@login_required
 def order(request, order_id):
     if Order.objects.get(id=order_id).org.profile.user != request.user:
         raise PermissionDenied()
     order = Order.objects.get(id=order_id)
     # print(Form.objects.filter(order=order).values())
     # forms = Form.objects.filter(order=order).values()
-
+    sources = list(
+        Source.objects.order_by('source_file_name', "id").distinct('source_file_name').filter(order=order).values(
+            'source_file_name'))
+    # print(sources)
     forms = list(Form.objects.filter(order=order).order_by('id').values())
     for i in range(len(forms)):
         # print(test[i])
@@ -110,6 +116,22 @@ def order(request, order_id):
         forms[i]['answers'] = length
     print(forms)
     if request.method == "POST":
+        if request.FILES:
+            # print(datetime.datetime.now())
+            # print(str(settings.MEDIA_ROOT)+'/user_2')
+            # print(os.path.isdir(str(settings.MEDIA_ROOT)+'/user_3'))
+            if request.FILES['myFile'].content_type == 'application/zip':
+                with zipfile.ZipFile(request.FILES['myFile'], 'r') as myzip:
+                    archive_name = f'{myzip.filename}_{str(datetime.datetime.now())}'
+                    first_name_part = f"order_{order_id}/{archive_name}/"
+                    for filename in myzip.namelist()[1:]:
+                        with myzip.open(filename) as myfile:
+                            # print(zipfile.Path(myzip, filename).name)  # arcname/picture.jpeg -> picture.jpeg
+                            name = first_name_part + zipfile.Path(myzip, filename).name
+                            # print(name)
+                            Source(file_link=ContentFile(myfile.read(), name=name), source_file_name=archive_name,
+                                   s_type="IM", order=Order.objects.get(id=order_id), repeat_time_plan=2,
+                                   repeat_time_fact=0).save()
         form = OrderForm(request.POST, instance=order)
         if form.is_valid():
             print('ITS VALID!')
@@ -118,7 +140,8 @@ def order(request, order_id):
         form = OrderForm(instance=order)
     return render(request, 'polls/order.html', {"order": order,
                                                 "form": form,
-                                                'forms': forms})
+                                                'forms': forms,
+                                                'sources': sources})
 
 
 def change_order_status(request, order_id, status):
