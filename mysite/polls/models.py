@@ -85,10 +85,19 @@ class Source(models.Model):
         ("IM", "Inage"),
         ("VD", "Videos"),
     ]
+    STATUS = [
+        ("OG", "On going"),
+        ("ST", "Stopped")
+    ]
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     source_file_name = models.CharField(max_length=200)
     file_link = models.FileField(upload_to=user_directory_path)
     s_type = models.CharField(max_length=2, choices=TYPES)
+    status = models.CharField(
+        max_length=2,
+        choices=STATUS,
+        default='OG'
+    )
     repeat_time_plan = models.PositiveSmallIntegerField()
     repeat_time_fact = models.PositiveSmallIntegerField()
 

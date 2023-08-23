@@ -19,4 +19,5 @@ urlpatterns = [
     path('top_up_balance/<int:org_id>', views.top_up_balance, name='top_up_balance'),
     path('order/<int:order_id>', views.order, name='order'),
     path('change_order_status/<int:order_id>/<str:status>', views.change_order_status, name='change_order_status'),
+    path('change_source_status/<str:source_name>', views.change_source_status, name='change_source_status')
 ]

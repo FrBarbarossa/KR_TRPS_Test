@@ -103,8 +103,8 @@ def order(request, order_id):
     # forms = Form.objects.filter(order=order).values()
     sources = list(
         Source.objects.order_by('source_file_name', "id").distinct('source_file_name').filter(order=order).values(
-            'source_file_name'))
-    # print(sources)
+            'source_file_name', 'status'))
+    print(sources)
     forms = list(Form.objects.filter(order=order).order_by('id').values())
     for i in range(len(forms)):
         # print(test[i])
@@ -142,6 +142,15 @@ def order(request, order_id):
                                                 "form": form,
                                                 'forms': forms,
                                                 'sources': sources})
+
+
+def change_source_status(request, source_name):
+    if 'status' in request.POST:
+        Source.objects.filter(source_file_name=source_name).update(status='OG')
+        print(request.POST['status'])
+    else:
+        Source.objects.filter(source_file_name=source_name).update(status='ST')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def change_order_status(request, order_id, status):
