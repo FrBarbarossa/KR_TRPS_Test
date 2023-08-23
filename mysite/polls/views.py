@@ -322,11 +322,18 @@ def create_task(request, order_id):
     return JsonResponse({'data': task.status}, status=200)
 
 
-def get_all_published_orders(request):
-    if request.POST:
-        pass
-    orders = serializers.serialize('json', Order.objects.filter(status="PB"))
+def get_filtered_orders(request):
+    print("!!")
+    print(json.load(request))
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # print(json.load(request.POST))
+        print("!!!!!")
+    orders = serializers.serialize('json', Order.objects.prefetch_related('form_set').filter(status="CR"))
+    print(orders)
     return JsonResponse({'status': "Ok", "orders": orders}, status=200)
     # Create your views here.
 
-def
+def tasks(request):
+    organizations = Organization.objects.filter(status='CR')
+    return render(request, 'polls/tasks.html', {"organizations": organizations})
+

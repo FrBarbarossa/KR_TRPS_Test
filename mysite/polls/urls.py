@@ -20,5 +20,7 @@ urlpatterns = [
     path('order/<int:order_id>', views.order, name='order'),
     path('change_order_status/<int:order_id>/<str:status>', views.change_order_status, name='change_order_status'),
     path('change_source_status/<str:source_name>', views.change_source_status, name='change_source_status'),
-    path('create_task/<int:order_id>', views.create_task, name='create_task')
+    path('create_task/<int:order_id>', views.create_task, name='create_task'),
+    path('get_filtered_orders/', views.get_filtered_orders, name='get_filtered_orders'),
+    path('tasks', views.tasks, name='tasks')
 ]
