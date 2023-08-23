@@ -60,6 +60,8 @@ class Order(models.Model):
     org = models.ForeignKey(Organization, on_delete=models.CASCADE)
     balance = models.DecimalField(max_digits=19, decimal_places=4)
     task_cost = models.DecimalField(max_digits=5, decimal_places=4)
+    name = models.CharField(max_length=50, default="Задание на разметку")
+    description = models.CharField(max_length=150, default="Описание задания на разметку")
     status = models.CharField(
         max_length=2,
         choices=STATUS_CHOICES,

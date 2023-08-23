@@ -2,7 +2,6 @@ from django import forms
 from polls.models import *
 
 
-
 class NameForm(forms.Form):
     your_name = forms.CharField(label="Your name", max_length=100)
 
@@ -47,7 +46,20 @@ class OrgForm(forms.ModelForm):
         model = Organization
         fields = ["name", "bio", "email"]
 
+
 class OrderForm(forms.ModelForm):
+    name = forms.CharField(max_length=50,
+                           required=True,
+                           widget=forms.TextInput(attrs={"class": "form-control",
+                                                         "placeholder": "Название заказа (например: Есть ли кошка на фото?)",
+                                                         "aria-label": "Username",
+                                                         "aria-describedby": "basic-addon1"}))
+
+    description = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control',
+                                                                      'rows': 3,
+                                                                      "maxlength": 150,
+                                                                      'placeholder': "Описание задания. Не более 150 символов Будьте кратки :)"}))
+
     class Meta:
         model = Order
-        fields = ['instruction']
+        fields = ['name', "description", 'instruction']

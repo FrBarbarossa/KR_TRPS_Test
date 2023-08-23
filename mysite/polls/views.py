@@ -1,7 +1,9 @@
 import datetime
 import os
+import random
 
 from django.shortcuts import render
+from django.db.models import F
 from polls.models import *
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
@@ -305,4 +307,26 @@ def task_get_config(request, id):
             "startData": "16.08.2023 17:00"}
     return JsonResponse({'data': data}, status=200)
 
-# Create your views here.
+
+def create_task(request, order_id):
+    form = Form.objects.get(order_id=order_id, is_active=True)
+    sources = Source.objects.filter(order_id=order_id, status='OG', repeat_time_plan__gt=F('repeat_time_fact'))
+    task = Task(executor_id=2, form=form, status='ST')
+    for i in range(form.repeat_times):
+        choosed_source = random.choice(sources)
+        choosed_source.repeat_time_fact += 1
+        # choosed_source.save()
+        rs = ReservedSource(source=choosed_source, task=task, status="RD")
+        # rs.save()
+        print(rs)
+    return JsonResponse({'data': task.status}, status=200)
+
+
+def get_all_published_orders(request):
+    if request.POST:
+        pass
+    orders = serializers.serialize('json', Order.objects.filter(status="PB"))
+    return JsonResponse({'status': "Ok", "orders": orders}, status=200)
+    # Create your views here.
+
+def
