@@ -40,9 +40,48 @@ function changeTasksSort() {
 
         // on success
         success: function (response) {
-            console.log(response);
+            console.log(response.orders[0]['order__task_cost']);
             if (response.data) {
-
+                for (let i = 0; i < response.orders.length; i++) {
+                    console.log(response.orders[i])
+                    document.getElementById('tasks-vault').insertAdjacentHTML('beforeend', ` <div class="container list-group-item list-group-item-action list-group-item-secondary">
+                            <div class="row p-2">
+                                <div class="col">
+                                    <div class="row">
+                                        <h4>${response.orders[i]['order__name']}</h4>
+                                    </div>
+                                    <div class="row">
+                                        <h6>Название организации</h6>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <p class="text-break">ФФФФФФ ФФФФФФФФФФФФФФФФФФФФ ФФФФФФ ФФФФФФФФФФ
+                                                ФФФФФФФФФ ФФФ ФФФФФ ФФФ
+                                                ФФФФФФФФФФ ФФФФФФФФФ ФФФФФФФ ФФФФФФФФ ФФФФФФФ ФФФФФФФФФФФ ФФ ФФФФФФФФ
+                                                ФФФФФФФФФФ</p>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-between">
+                                        <div class="col-auto">
+                                            <button class="btn btn-primary">Инструкция</button>
+                                        </div>
+                                        <div class="col-auto">
+                                            <button class="btn btn-success">Приступить</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="row justify-content-end">
+                                        <div class="col-auto">
+                                            <p class="fs-3 fw-bold m-0" style="color:green" ;>123 у.е.</p>
+                                            <p>за задание</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+`);
+                }
 
             } else {
 

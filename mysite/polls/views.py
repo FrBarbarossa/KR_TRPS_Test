@@ -3,7 +3,7 @@ import os
 import random
 
 from django.shortcuts import render
-from django.db.models import F
+from django.db.models import F, Prefetch
 from polls.models import *
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
@@ -323,17 +323,25 @@ def create_task(request, order_id):
 
 
 def get_filtered_orders(request):
-    print("!!")
-    print(json.load(request))
+    orders_ids = []
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        # print(json.load(request.POST))
-        print("!!!!!")
-    orders = serializers.serialize('json', Order.objects.prefetch_related('form_set').filter(status="CR"))
-    print(orders)
-    return JsonResponse({'status': "Ok", "orders": orders}, status=200)
+        orgs_ids = json.load(request)['orgs_ids']
+    orders = serializers.serialize('json', Order.objects.filter(org_id__in=orgs_ids, status="CR"))
+    ord = Order.objects.filter(org_id__in=orgs_ids, status="CR")
+    forms = list(Form.objects.filter(is_active=True).select_related('order').filter(order__org_id__in=orgs_ids,
+                                                                               order__status="CR", order__balance__gt=F(
+            'order__task_cost')).values('duration', 'order__name', 'order__description', 'order__org__name',
+                                        'order__task_cost', 'order__created_at'))
+
+    # for i in ord:
+
+    # queryset = Department.objects.all().prefetch_related(Prefetch("employees", queryset=employees))
+    # print(orders)
+    print(forms)
+    return JsonResponse({'status': "Ok", "orders": forms}, status=200)
     # Create your views here.
+
 
 def tasks(request):
     organizations = Organization.objects.filter(status='CR')
     return render(request, 'polls/tasks.html', {"organizations": organizations})
-
