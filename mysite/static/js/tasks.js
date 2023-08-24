@@ -1,6 +1,6 @@
 let form_data = [];
 
-// window.onload = getOnloadConfig;
+window.onload = changeTasksSort;
 // window.setInterval(saveConfig, 15000);
 
 
@@ -21,15 +21,14 @@ let form_classifier = {
 function changeTasksSort() {
     let orgs_ids = [];
     let el = document.getElementsByName('org');
-    console.log(el);
+    // console.log(el);
     for (let i = 0; i < el.length; i++) {
-        console.log(el[i].checked);
-
+        // console.log(el[i].checked);
         if (el[i].checked) {
             orgs_ids.push(el[i].value);
         }
     }
-    console.log(orgs_ids);
+    // console.log(orgs_ids);
     $.ajax({
         headers: {"X-CSRFToken": getCookie("csrftoken")},
         url: `/polls/get_filtered_orders/`,
@@ -40,25 +39,23 @@ function changeTasksSort() {
 
         // on success
         success: function (response) {
-            console.log(response.orders[0]['order__task_cost']);
-            if (response.data) {
-                for (let i = 0; i < response.orders.length; i++) {
-                    console.log(response.orders[i])
+            let data = response.orders;
+            document.getElementById('tasks-vault').innerHTML = '';
+            if (data.length > 0) {
+                for (let pos = 0; pos < data.length; pos++) {
+                    // console.log(data[pos])
                     document.getElementById('tasks-vault').insertAdjacentHTML('beforeend', ` <div class="container list-group-item list-group-item-action list-group-item-secondary">
                             <div class="row p-2">
                                 <div class="col">
                                     <div class="row">
-                                        <h4>${response.orders[i]['order__name']}</h4>
+                                        <h4>${data[pos]['order__name']}</h4>
                                     </div>
                                     <div class="row">
-                                        <h6>Название организации</h6>
+                                        <h6>${data[pos]['order__org__name']}</h6>
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <p class="text-break">ФФФФФФ ФФФФФФФФФФФФФФФФФФФФ ФФФФФФ ФФФФФФФФФФ
-                                                ФФФФФФФФФ ФФФ ФФФФФ ФФФ
-                                                ФФФФФФФФФФ ФФФФФФФФФ ФФФФФФФ ФФФФФФФФ ФФФФФФФ ФФФФФФФФФФФ ФФ ФФФФФФФФ
-                                                ФФФФФФФФФФ</p>
+                                            <p class="text-break">${data[pos]['order__description']}</p>
                                         </div>
                                     </div>
                                     <div class="row justify-content-between">
@@ -73,7 +70,7 @@ function changeTasksSort() {
                                 <div class="col-3">
                                     <div class="row justify-content-end">
                                         <div class="col-auto">
-                                            <p class="fs-3 fw-bold m-0" style="color:green" ;>123 у.е.</p>
+                                            <p class="fs-3 fw-bold m-0" style="color:green" ;>${data[pos]['order__task_cost']} у.е.</p>
                                             <p>за задание</p>
                                         </div>
                                     </div>
