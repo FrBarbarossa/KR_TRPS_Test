@@ -60,10 +60,12 @@ function changeTasksSort() {
                                     </div>
                                     <div class="row justify-content-between">
                                         <div class="col-auto">
-                                            <button class="btn btn-primary">Инструкция</button>
+                                            <button class="btn btn-primary" onclick="ShowInstruction(${data[pos]['order_id']})">Инструкция</button>
                                         </div>
                                         <div class="col-auto">
-                                            <button class="btn btn-success">Приступить</button>
+                                            <form action="/polls/create_task/${data[pos]['order_id']}">
+                                                <button class="btn btn-success" href>Приступить</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -94,6 +96,40 @@ function changeTasksSort() {
         }
     });
 }
+
+function ShowInstruction(order_id) {
+    $.ajax({
+        headers: {"X-CSRFToken": getCookie("csrftoken")},
+        url: `/polls/get_order_instruction/${order_id}`,
+        type: "GET",
+        processData: false,
+        contentType: "application/json; charset=UTF-8",
+        // on success
+        success: function (response) {
+            if (response.instruction) {
+                console.log("Success message");
+                document.getElementById('instr_content').innerHTML = response.instruction;
+                const myModal = new bootstrap.Modal('#exampleModal');
+                myModal.show();
+            } else {
+                console.log("Not success message")
+            }
+
+        },
+        // on error
+        error: function (response) {
+            // alert the error if any error occured
+            console.log("Not success message 2");
+            console.log(response.responseJSON.errors);
+            window.location.replace(document.referrer);
+            alert('Error 403 forbidden');
+        }
+    });
+
+    // document.getElementById('exampleModal').modal('show');
+    return;
+}
+
 
 function getOnloadConfig() {
     $.ajax({
@@ -460,19 +496,6 @@ function savePiece(pos) {
     }
     document.getElementsByName("quest_header")[pos].innerHTML = document.getElementById('quest').value;
 
-}
-
-// Функция открывает модальное окно, выбирает функцию наполнения в соответствии с типом
-function editPiece(pos) {
-    if (form_data[pos].type == 'chose') {
-        editChoseOneOf(pos);
-    }
-
-    const myModal = new bootstrap.Modal('#exampleModal');
-    myModal.show();
-    console.log(pos);
-    // document.getElementById('exampleModal').modal('show');
-    return;
 }
 
 function addFormLine(el, type) {

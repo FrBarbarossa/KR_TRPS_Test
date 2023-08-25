@@ -123,7 +123,7 @@ class Task(models.Model):
         default=STARTED
     )
     start_DateTime = models.DateTimeField(auto_now_add=True)
-    end_DateTime = models.DateTimeField()
+    end_DateTime = models.DateTimeField(null=True, blank=True)
 
 
 class ReservedSource(models.Model):
@@ -147,7 +147,7 @@ class ReservedSource(models.Model):
 
 class Answer(models.Model):
     executor = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    res_source = models.ForeignKey(ReservedSource, on_delete=models.CASCADE)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     data = models.JSONField()
     created_at = models.DateTimeField(auto_now_add=True)

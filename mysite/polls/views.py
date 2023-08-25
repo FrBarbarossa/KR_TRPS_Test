@@ -310,38 +310,59 @@ def task_get_config(request, id):
 
 def create_task(request, order_id):
     form = Form.objects.get(order_id=order_id, is_active=True)
-    sources = Source.objects.filter(order_id=order_id, status='OG', repeat_time_plan__gt=F('repeat_time_fact'))
-    task = Task(executor_id=2, form=form, status='ST')
-    for i in range(form.repeat_times):
-        choosed_source = random.choice(sources)
+    sources = Source.objects.filter(order_id=order_id, status='OG', repeat_time_plan__gt=F('repeat_time_fact'))[
+              :form.repeat_times]
+    task = Task(executor_id=request.user.profile.id, form=form, status='ST')
+    task.save()
+    for choosed_source in sources:
+        # choosed_source = random.choice(sources)
         choosed_source.repeat_time_fact += 1
-        # choosed_source.save()
+        choosed_source.save()
         rs = ReservedSource(source=choosed_source, task=task, status="RD")
-        # rs.save()
+        rs.save()
         print(rs)
-    return JsonResponse({'data': task.status}, status=200)
+    return HttpResponseRedirect(reverse("polls:task_implementation", kwargs={"task_id": task.id}))
 
 
 def get_filtered_orders(request):
     orders_ids = []
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         orgs_ids = json.load(request)['orgs_ids']
-    orders = serializers.serialize('json', Order.objects.filter(org_id__in=orgs_ids, status="CR"))
-    ord = Order.objects.filter(org_id__in=orgs_ids, status="CR")
     forms = list(Form.objects.filter(is_active=True).select_related('order').filter(order__org_id__in=orgs_ids,
-                                                                               order__status="CR", order__balance__gt=F(
-            'order__task_cost')).values('duration', 'order__name', 'order__description', 'order__org__name',
-                                        'order__task_cost', 'order__created_at'))
+                                                                                    order__status="CR",
+                                                                                    order__balance__gt=F(
+                                                                                        'order__task_cost')).values(
+        'duration', 'order__name', 'order__description', 'order__org__name',
+        'order__task_cost', 'order__created_at', 'id', 'order_id'))
 
-    # for i in ord:
-
-    # queryset = Department.objects.all().prefetch_related(Prefetch("employees", queryset=employees))
-    # print(orders)
     print(forms)
     return JsonResponse({'status': "Ok", "orders": forms}, status=200)
-    # Create your views here.
 
 
 def tasks(request):
     organizations = Organization.objects.filter(status='CR')
     return render(request, 'polls/tasks.html', {"organizations": organizations})
+
+
+def get_order_instruction(request, order_id):
+    instr = Order.objects.get(id=order_id).instruction
+    print(instr)
+    return JsonResponse({'status': "Ok", "instruction": instr}, status=200)
+
+
+def task_implementation(request, task_id):
+    # reserved_sources, form, answers
+    # sources = ReservedSource.objects.filter(task_id=task_id).select_related('answer').select_related('source').order_by(
+    #     'id').values('id', 'source__file_link', "answer__id")
+    sources = ReservedSource.objects.filter(task_id=task_id)
+    task = Task.objects.get(id=task_id)
+    form = task.form
+    # configuration = Task.objects.filter(id=task_id).select_related("form").select_related("reservedsource").order_by(
+    #     'reservedsource__id').values('id',
+    #                                  'form__order',
+    #                                  'reservedsource__source_id',
+    #                                  'answer__id')
+    print(sources)
+    print(form)
+    #
+    return render(request, 'polls/form_implementation.html', {"sources": sources, "form":form, 'task':task})
