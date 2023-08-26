@@ -4,7 +4,7 @@
 {% load static %}
 
 {% block js_add %}
-    <script src="{% static 'js/tasks.js' %}"></script>
+    <script src="{% static 'js/form_implementation.js' %}"></script>
 
 {% endblock %}
 {% block content %}
@@ -17,10 +17,10 @@
                     {% endif %}
                 </div>
             </div>
-            <form>
+            <form onsubmit="event.preventDefault();setDone({{ source.id }},{{ task.id }});">
 
                 {% for quest in form.data %}
-                    <div class="row">
+                    <div class="row mt-3" name="answers_{{ source.id }}">
                         <div class="col-auto">
                             <div class="row">
                                 <h5>{{ quest.question }}</h5>
@@ -33,11 +33,12 @@
                                         {% endif %}
 
                                         <div class="form-check">
-                                        {{ forloop.parentcounter.counter }}
-                                            <input class="form-check-input" type="radio" name='{{ loop.parent.loop.index }}'
-                                                    id="flexRadioDefault1" {% if quest.attributes.required %}
+                                            <input class="form-check-input" type="radio"
+                                                   name='{{ source.id }}_{{ forloop.parentloop.counter0 }}'
+                                                   id="flexRadioDefault1" {% if quest.attributes.required %}
                                                    required
-                                            {% endif %}>
+                                            {% endif %}
+                                                   value="{{ elem }}">
                                             <label class="form-check-label" for="flexRadioDefault1">
                                                 {{ elem }}
                                             </label>
@@ -49,10 +50,17 @@
                         </div>
                     </div>
                 {% endfor %}
-                <button class="btn btn-warning">Сохранить ответ</button>
-
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-warning">Сохранить ответ</button>
+                </div>
+                <div class="col-2" id="quest_status_{{ forloop.counter0 }}"></div>
             </form>
-
+            <hr style="    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;">
         {% endfor %}
     </div>
 {% endblock content %}

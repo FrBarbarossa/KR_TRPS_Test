@@ -365,4 +365,4 @@ def task_implementation(request, task_id):
     print(sources)
     print(form)
     #
-    return render(request, 'polls/form_implementation.html', {"sources": sources, "form":form, 'task':task})
+    return render(request, 'polls/form_implementation.html', {"sources": sources, "form": form, 'task':task})

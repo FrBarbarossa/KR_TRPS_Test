@@ -1,5 +1,27 @@
-window.onload = changeTasksSort;
+// window.onload = changeTasksSort;
 // window.setInterval(saveConfig, 15000);
+
+
+function setDone(reserved_source_id, task_id) {
+    // ev.preventDefault();
+    // console.log(document.getElementsByName(id));
+    let output = {};
+    output[reserved_source_id] = [];
+    number_of_questions = document.getElementsByName(`answers_${reserved_source_id}`).length;
+    // console.log(leng);
+    for (let quest_number = 0; quest_number < number_of_questions; quest_number++) {
+        // console.log(quest_number);
+        // console.log(`${reserved_source_id}_${quest_number}`);
+        console.log(output);
+        output[reserved_source_id].push($(`input:radio[name=${reserved_source_id}_${quest_number}]:checked`).val());
+        console.log($(`input:radio[name=${reserved_source_id}_${quest_number}]:checked`).val());
+    }
+    console.log(output);
+    // let answers = $(`input:radio[name^=${id}]:checked`);
+    // for (i = 0; i < answers.length; i++) {
+    //     console.log(answers[i].value);
+    // }
+}
 
 function changeTasksSort() {
     let orgs_ids = [];
