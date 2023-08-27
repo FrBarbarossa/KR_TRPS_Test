@@ -1,7 +1,7 @@
 let form_data = [];
 
 window.onload = getOnloadConfig;
-window.setInterval(saveConfig, 15000);
+let intreval = window.setInterval(saveConfig, 5000);
 
 
 let form_classifier = {
@@ -34,10 +34,11 @@ function getOnloadConfig() {
                     document.getElementById('form_zone').insertAdjacentHTML('beforeend', getFormPiece(form_data[i]['type'], form_data[i]['question'], i));
 
                 }
-
-
             } else {
-                form_data = []
+                form_data = [];
+            }
+            if (response.status != "Ok") {
+                alert('Редактирование формы невозможно. Некоторые данные уже были размечены по форме в данной конфигурации.')
             }
         },
         // on error
@@ -79,7 +80,8 @@ function saveConfig() {
             if (response.some_param == true) {
                 console.log("Success message")
             } else {
-                console.log("Not success message")
+                console.log("Not success message");
+                clearInterval(intreval);
             }
 
         },

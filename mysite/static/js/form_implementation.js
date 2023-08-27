@@ -17,107 +17,57 @@ function setDone(reserved_source_id, task_id) {
         console.log($(`input:radio[name=${reserved_source_id}_${quest_number}]:checked`).val());
     }
     console.log(output);
+    $.ajax({
+        headers: {"X-CSRFToken": getCookie("csrftoken")},
+        url: `/polls/task_implementation/save_form_answer/${task_id}`,
+        type: "POST",
+        processData: false,
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify(output),
+        // on success
+        success: function (response) {
+            if (response.status == 'Ok') {
+                console.log("Success message");
+                // document.getElementById('done_mark').hidden = false;
+                document.getElementById(`done_mark_${reserved_source_id}`).style = "visibility:visible;";
+
+            } else {
+                console.log("Not success message")
+            }
+
+        },
+        // on error
+        error: function (response) {
+            // alert the error if any error occured
+            console.log("Not success message 2");
+            console.log(response.responseJSON.errors);
+            window.location.replace(document.referrer);
+            alert('Error 403 forbidden');
+        }
+    });
+
     // let answers = $(`input:radio[name^=${id}]:checked`);
     // for (i = 0; i < answers.length; i++) {
     //     console.log(answers[i].value);
     // }
 }
 
-function changeTasksSort() {
-    let orgs_ids = [];
-    let el = document.getElementsByName('org');
-    // console.log(el);
-    for (let i = 0; i < el.length; i++) {
-        // console.log(el[i].checked);
-        if (el[i].checked) {
-            orgs_ids.push(el[i].value);
-        }
-    }
-    // console.log(orgs_ids);
+function CompleteTask(task_id) {
     $.ajax({
         headers: {"X-CSRFToken": getCookie("csrftoken")},
-        url: `/polls/get_filtered_orders/`,
+        url: `/polls/task_imlementation/complete_task/${task_id}`,
         type: "POST",
         processData: false,
         contentType: "application/json; charset=UTF-8",
-        data: JSON.stringify({'orgs_ids': orgs_ids}), // get the form data
-
         // on success
         success: function (response) {
-            let data = response.orders;
-            document.getElementById('tasks-vault').innerHTML = '';
-            if (data.length > 0) {
-                for (let pos = 0; pos < data.length; pos++) {
-                    // console.log(data[pos])
-                    document.getElementById('tasks-vault').insertAdjacentHTML('beforeend', ` <div class="container list-group-item list-group-item-action list-group-item-secondary">
-                            <div class="row p-2">
-                                <div class="col">
-                                    <div class="row">
-                                        <h4>${data[pos]['order__name']}</h4>
-                                    </div>
-                                    <div class="row">
-                                        <h6>${data[pos]['order__org__name']}</h6>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <p class="text-break">${data[pos]['order__description']}</p>
-                                        </div>
-                                    </div>
-                                    <div class="row justify-content-between">
-                                        <div class="col-auto">
-                                            <button class="btn btn-primary" onclick="ShowInstruction(${data[pos]['order_id']})">Инструкция</button>
-                                        </div>
-                                        <div class="col-auto">
-                                            <form action="/polls/create_task/${data[pos]['order_id']}">
-                                                <button class="btn btn-success" href>Приступить</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-3">
-                                    <div class="row justify-content-end">
-                                        <div class="col-auto">
-                                            <p class="fs-3 fw-bold m-0" style="color:green" ;>${data[pos]['order__task_cost']} у.е.</p>
-                                            <p>за задание</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-`);
-                }
-
-            } else {
-
-            }
-        },
-        // on error
-        error: function (response) {
-            // alert the error if any error occured
-            console.log("Not success message 2");
-            console.log(response.responseJSON);
-            window.location.replace(document.referrer);
-            alert('Error 403 forbidden');
-        }
-    });
-}
-
-function ShowInstruction(order_id) {
-    $.ajax({
-        headers: {"X-CSRFToken": getCookie("csrftoken")},
-        url: `/polls/get_order_instruction/${order_id}`,
-        type: "GET",
-        processData: false,
-        contentType: "application/json; charset=UTF-8",
-        // on success
-        success: function (response) {
-            if (response.instruction) {
+            if (response.status == "Ok") {
                 console.log("Success message");
-                document.getElementById('instr_content').innerHTML = response.instruction;
-                const myModal = new bootstrap.Modal('#exampleModal');
-                myModal.show();
+                alert('Задание завершено. Награда скоро поступит на ваш счёт. Вы можете продолжить выполнять задания');
+                window.location.replace("/polls/tasks");
             } else {
-                console.log("Not success message")
+                console.log("Not success message");
+                alert('Вы не выполнили всех заданий!');
             }
 
         },

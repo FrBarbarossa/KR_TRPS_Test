@@ -13,6 +13,7 @@ urlpatterns = [
     path('form_creation/<int:id>/', views.form_creation, name='form_creation'),
     path('form_creation/<int:id>/save_config/', views.form_save_config, name='form_save_config'),
     path('form_creation/<int:id>/get_configuration/', views.form_get_config, name='form_get_config'),
+    path('download_form_data/<int:form_id>', views.download_form_data, name='download_form_data'),
     path('organization/<int:org_id>', views.orgranization, name='organization'),
     path('change_order_balance/<int:order_id>', views.change_order_balance, name='change_order_balance'),
     path('top_up_balance/<int:org_id>', views.top_up_balance, name='top_up_balance'),
@@ -24,5 +25,7 @@ urlpatterns = [
     path('get_order_instruction/<int:order_id>', views.get_order_instruction, name='get_order_instruction'),
     path('create_task/<int:order_id>', views.create_task, name='create_task'),
     path('task_implementation/<int:task_id>', views.task_implementation, name='task_implementation'),
+    path('task_implementation/save_form_answer/<int:task_id>', views.save_form_answer, name='save_form_answer'),
+    path('task_imlementation/complete_task/<int:task_id>', views.complete_task, name='complete_task')
 
 ]

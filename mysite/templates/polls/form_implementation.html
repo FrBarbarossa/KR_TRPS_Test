@@ -50,8 +50,27 @@
                         </div>
                     </div>
                 {% endfor %}
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-warning">Сохранить ответ</button>
+                <div class="row mt-3">
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-warning">Сохранить ответ</button>
+                    </div>
+                    <div class="col-auto" id="done_mark_{{ source.id }}" {% if source.id not in answers %}
+                         style="visibility:hidden;"
+                    {% else %}
+                         style="visibility:visible;"
+                    {% endif %}>
+
+                        <div class="row">
+                            <div class="col-auto">
+                                <img src="{% static 'img/check.png' %}" style="max-height:35px;">
+                            </div>
+                            <div class="col-auto mt-1">
+                                <h5 class="text-success">Вы уже выполнили это задание</h5>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
                 <div class="col-2" id="quest_status_{{ forloop.counter0 }}"></div>
             </form>
@@ -62,6 +81,11 @@
     margin: 1em 0;
     padding: 0;">
         {% endfor %}
+    <div class="row">
+        <div class="col-auto">
+            <button class="btn btn-success" onclick="CompleteTask({{ task.id }})">Закончить задание</button>
+        </div>
+    </div>
     </div>
 {% endblock content %}
 

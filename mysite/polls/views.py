@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.db.models import F, Prefetch
 from polls.models import *
 from django.urls import reverse
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, FileResponse
 from django.db.utils import IntegrityError
 from django.forms import formset_factory
 from .forms import *
@@ -271,20 +271,37 @@ def form_get_config(request, id):
     #                                                                                                         'Ответ_3']},
     #         {'type': 'chose', 'question': 'Ваш вопрос1', 'attributes': {}, 'additional_elements': []}]
     # data = serializers.serialize('json', Form.objects.filter(id=id))
+    status = 'Ok'
+    if len(Task.objects.filter(form_id=id)) > 0:
+        status = 'Cant be edit'
     data = list(Form.objects.filter(id=id).values('data'))[0]['data']
     print(data)
-    return JsonResponse({"data": data}, status=200)
+    return JsonResponse({"status": status, "data": data}, status=200)
 
 
 def form_save_config(request, id):
     if Form.objects.get(id=id).order.org.profile.user != request.user:
         raise PermissionDenied()
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if len(Task.objects.filter(form_id=id)) > 0:
+            return JsonResponse({'status': 'Cant be edit', "some_param": False}, status=200)
         form = Form.objects.get(id=id)
         form.data = json.load(request)
         form.save()
         print("!")
     return JsonResponse({'status': 'Gotcha', "some_param": True}, status=200)
+
+
+def download_form_data(request, form_id):
+    file_path = '/home/barbarossa/Рабочий стол/KR_TRPS_Test/mysite/media/user_2/order_1/ArchiveTest3.zip_2023-08-22 20:28:13.649643/Persik-5.jpeg'
+    file_handle = open(file_path, "r")
+
+    # send file
+    response = FileResponse(file_handle, content_type='whatever')
+    response['Content-Length'] = file_handle.tell()
+    response['Content-Disposition'] = 'attachment; filename="%s"' % file_handle.name
+
+    return response
 
 
 # Получить конфигурацию задания для формирования формы с ответами. При перезагрузке отрисуются только те, у которых статус "не выполнены"
@@ -306,22 +323,6 @@ def task_get_config(request, id):
                      {'type': 'chose', 'question': 'Ваш вопрос1', 'attributes': {}, 'additional_elements': []}],
             "startData": "16.08.2023 17:00"}
     return JsonResponse({'data': data}, status=200)
-
-
-def create_task(request, order_id):
-    form = Form.objects.get(order_id=order_id, is_active=True)
-    sources = Source.objects.filter(order_id=order_id, status='OG', repeat_time_plan__gt=F('repeat_time_fact'))[
-              :form.repeat_times]
-    task = Task(executor_id=request.user.profile.id, form=form, status='ST')
-    task.save()
-    for choosed_source in sources:
-        # choosed_source = random.choice(sources)
-        choosed_source.repeat_time_fact += 1
-        choosed_source.save()
-        rs = ReservedSource(source=choosed_source, task=task, status="RD")
-        rs.save()
-        print(rs)
-    return HttpResponseRedirect(reverse("polls:task_implementation", kwargs={"task_id": task.id}))
 
 
 def get_filtered_orders(request):
@@ -350,6 +351,22 @@ def get_order_instruction(request, order_id):
     return JsonResponse({'status': "Ok", "instruction": instr}, status=200)
 
 
+def create_task(request, order_id):
+    form = Form.objects.get(order_id=order_id, is_active=True)
+    sources = Source.objects.filter(order_id=order_id, status='OG', repeat_time_plan__gt=F('repeat_time_fact'))[
+              :form.repeat_times]
+    task = Task(executor_id=request.user.profile.id, form=form, status='ST')
+    task.save()
+    for choosed_source in sources:
+        # choosed_source = random.choice(sources)
+        choosed_source.repeat_time_fact += 1
+        choosed_source.save()
+        rs = ReservedSource(source=choosed_source, task=task, status="RD")
+        rs.save()
+        print(rs)
+    return HttpResponseRedirect(reverse("polls:task_implementation", kwargs={"task_id": task.id}))
+
+
 def task_implementation(request, task_id):
     # reserved_sources, form, answers
     # sources = ReservedSource.objects.filter(task_id=task_id).select_related('answer').select_related('source').order_by(
@@ -357,6 +374,7 @@ def task_implementation(request, task_id):
     sources = ReservedSource.objects.filter(task_id=task_id)
     task = Task.objects.get(id=task_id)
     form = task.form
+    answers = list(map(lambda x: tuple(x.values())[0], Answer.objects.filter(task_id=task_id).values('res_source_id')))
     # configuration = Task.objects.filter(id=task_id).select_related("form").select_related("reservedsource").order_by(
     #     'reservedsource__id').values('id',
     #                                  'form__order',
@@ -364,5 +382,33 @@ def task_implementation(request, task_id):
     #                                  'answer__id')
     print(sources)
     print(form)
+    print(answers)
     #
-    return render(request, 'polls/form_implementation.html', {"sources": sources, "form": form, 'task':task})
+    return render(request, 'polls/form_implementation.html',
+                  {"sources": sources, "form": form, 'task': task, "answers": answers})
+
+
+def save_form_answer(request, task_id):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        executor = request.user.profile.id
+        data = json.load(request)
+        res_source = list(data.keys())[0]
+        answ_data = data[res_source]
+        print(res_source, answ_data)
+        answers = Answer.objects.filter(executor_id=executor, task_id=task_id, res_source_id=res_source)
+        if answers:
+            answers[0].data = answ_data
+            answers[0].save()
+        else:
+            neo_answer = Answer(executor_id=executor, task_id=task_id, res_source_id=res_source, data=answ_data)
+            neo_answer.save()
+        return JsonResponse({'status': "Ok"}, status=200)
+        # print(json.load(request))
+
+
+def complete_task(request, task_id):
+    task = Task.objects.get(id=task_id)
+    if task.form.repeat_times == len(task.answer_set.all()):
+        return JsonResponse({'status': "Ok"}, status=200)
+    else:
+        return JsonResponse({'status': "Not done"}, status=200)
