@@ -3,11 +3,15 @@
 {% block title %}Заказ{% endblock title %}
 {% load static %}
 
+{% load shuffle %}
 {% block js_add %}
     <script src="{% static 'js/form_implementation.js' %}"></script>
 
 {% endblock %}
 {% block content %}
+    <section class="sticky" style="position: sticky;top: 75px;right: 75px;float: right">
+        <button type="button" class="btn btn-outline-danger" id="timer" disabled>Danger</button>
+    </section>
     <div class="container mx-auto px-1">
         {% for source in sources %}
             <div class="row justify-content-center">
@@ -25,31 +29,49 @@
                             <div class="row">
                                 <h5>{{ quest.question }}</h5>
                             </div>
+
+
                             {% if quest.type == 'chose' %}
-                                {% for elem in quest.additional_elements %}
-                                    <div class="row">
-                                        {% if quest.attributes.random %}
-
-                                        {% endif %}
-
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio"
-                                                   name='{{ source.id }}_{{ forloop.parentloop.counter0 }}'
-                                                   id="flexRadioDefault1" {% if quest.attributes.required %}
-                                                   required
-                                            {% endif %}
-                                                   value="{{ elem }}">
-                                            <label class="form-check-label" for="flexRadioDefault1">
-                                                {{ elem }}
-                                            </label>
+                                {% if quest.attributes.random %}
+                                    {% for elem in quest.additional_elements|shuffle %}
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio"
+                                                       name='{{ source.id }}_{{ forloop.parentloop.counter0 }}'
+                                                       id="flexRadioDefault1" {% if quest.attributes.required %}
+                                                       required
+                                                {% endif %}
+                                                       value="{{ elem }}">
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    {{ elem }}
+                                                </label>
+                                            </div>
                                         </div>
-                                    </div>
-                                {% endfor %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% for elem in quest.additional_elements %}
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio"
+                                                       name='{{ source.id }}_{{ forloop.parentloop.counter0 }}'
+                                                       id="flexRadioDefault1" {% if quest.attributes.required %}
+                                                       required
+                                                {% endif %}
+                                                       value="{{ elem }}">
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    {{ elem }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
                             {% endif %}
+
 
                         </div>
                     </div>
                 {% endfor %}
+
                 <div class="row mt-3">
                     <div class="col-auto">
                         <button type="submit" class="btn btn-warning">Сохранить ответ</button>
@@ -81,12 +103,14 @@
     margin: 1em 0;
     padding: 0;">
         {% endfor %}
-    <div class="row">
-        <div class="col-auto">
-            <button class="btn btn-success" onclick="CompleteTask({{ task.id }})">Закончить задание</button>
+        <div class="row">
+            <div class="col-auto">
+                <button class="btn btn-success" onclick="CompleteTask({{ task.id }})">Закончить задание</button>
+            </div>
         </div>
     </div>
-    </div>
+            <script type="text/javascript">window.onload = time('{{ form.duration }}');</script>
+
 {% endblock content %}
 
 

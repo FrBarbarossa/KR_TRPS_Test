@@ -2,11 +2,12 @@ import datetime
 import os
 import random
 
+import csv
 from django.shortcuts import render
 from django.db.models import F, Prefetch
 from polls.models import *
 from django.urls import reverse
-from django.http import HttpResponseRedirect, JsonResponse, FileResponse
+from django.http import HttpResponseRedirect, JsonResponse, FileResponse, HttpResponse
 from django.db.utils import IntegrityError
 from django.forms import formset_factory
 from .forms import *
@@ -295,16 +296,22 @@ def form_save_config(request, id):
 def download_form_data(request, form_id):
     answers = Task.objects.filter(form_id=form_id).select_related("answer").filter(answer__task_id__isnull=False).values(
         'answer__task_id', 'answer__data', 'answer__executor_id')
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="results_form_{form_id}_{str(datetime.datetime.now())}.csv"'},
+    )
+    form = Form.objects.get(id=form_id)
+    headers_line = ['executor_id']
+    for quest in form.data:
+        if "feature_name" in quest['attributes'].keys():
+            headers_line.append(quest['attributes']['feature_name'])
+        else:
+            headers_line.append(quest['question'])
+
+    writer = csv.writer(response)
+    writer.writerow(headers_line)
     for answer in answers:
-        print(answer)
-
-    file_path = '/home/barbarossa/Рабочий стол/KR_TRPS_Test/mysite/media/user_2/order_1/ArchiveTest3.zip_2023-08-22 20:28:13.649643/Persik-5.jpeg'
-    file_handle = open(file_path, "rb")
-
-    # send file
-    response = FileResponse(file_handle)
-    response['Content-Disposition'] = 'attachment; filename=' + "result_file"
-
+        writer.writerow([answer['answer__executor_id']] + answer['answer__data'])
     return response
 
 
@@ -387,6 +394,7 @@ def task_implementation(request, task_id):
     print(sources)
     print(form)
     print(answers)
+    print((task.start_DateTime + form.duration) > datetime.datetime.now(datetime.timezone.utc))
     #
     return render(request, 'polls/form_implementation.html',
                   {"sources": sources, "form": form, 'task': task, "answers": answers})
