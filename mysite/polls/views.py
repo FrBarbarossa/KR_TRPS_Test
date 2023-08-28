@@ -379,25 +379,19 @@ def create_task(request, order_id):
 
 
 def task_implementation(request, task_id):
-    # reserved_sources, form, answers
-    # sources = ReservedSource.objects.filter(task_id=task_id).select_related('answer').select_related('source').order_by(
-    #     'id').values('id', 'source__file_link', "answer__id")
     sources = ReservedSource.objects.filter(task_id=task_id)
     task = Task.objects.get(id=task_id)
     form = task.form
     answers = list(map(lambda x: tuple(x.values())[0], Answer.objects.filter(task_id=task_id).values('res_source_id')))
-    # configuration = Task.objects.filter(id=task_id).select_related("form").select_related("reservedsource").order_by(
-    #     'reservedsource__id').values('id',
-    #                                  'form__order',
-    #                                  'reservedsource__source_id',
-    #                                  'answer__id')
-    print(sources)
-    print(form)
-    print(answers)
-    print((task.start_DateTime + form.duration) > datetime.datetime.now(datetime.timezone.utc))
-    #
+
+    if (task.start_DateTime + form.duration) <= datetime.datetime.now(datetime.timezone.utc):
+        messages.warning(request, 'Время выполнения задания истекло')
+        return HttpResponseRedirect(reverse("polls:tasks"))
+
+    delta = abs(datetime.datetime.now(datetime.timezone.utc) - (task.start_DateTime + form.duration))
+    duration = f'{delta.seconds//3600}:{delta.seconds//60}:{delta.seconds%60}'
     return render(request, 'polls/form_implementation.html',
-                  {"sources": sources, "form": form, 'task': task, "answers": answers})
+                  {"sources": sources, "form": form, 'task': task, "answers": answers, "duration":duration})
 
 
 def save_form_answer(request, task_id):
