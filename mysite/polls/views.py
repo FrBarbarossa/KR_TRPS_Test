@@ -293,13 +293,17 @@ def form_save_config(request, id):
 
 
 def download_form_data(request, form_id):
+    answers = Task.objects.filter(form_id=form_id).select_related("answer").filter(answer__task_id__isnull=False).values(
+        'answer__task_id', 'answer__data', 'answer__executor_id')
+    for answer in answers:
+        print(answer)
+
     file_path = '/home/barbarossa/Рабочий стол/KR_TRPS_Test/mysite/media/user_2/order_1/ArchiveTest3.zip_2023-08-22 20:28:13.649643/Persik-5.jpeg'
-    file_handle = open(file_path, "r")
+    file_handle = open(file_path, "rb")
 
     # send file
-    response = FileResponse(file_handle, content_type='whatever')
-    response['Content-Length'] = file_handle.tell()
-    response['Content-Disposition'] = 'attachment; filename="%s"' % file_handle.name
+    response = FileResponse(file_handle)
+    response['Content-Disposition'] = 'attachment; filename=' + "result_file"
 
     return response
 
