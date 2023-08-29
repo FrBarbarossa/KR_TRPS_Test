@@ -27,7 +27,7 @@ function changeTasksSort() {
             if (data.length > 0) {
                 for (let pos = 0; pos < data.length; pos++) {
                     // console.log(data[pos])
-                    document.getElementById('tasks-vault').insertAdjacentHTML('beforeend', ` <div class="container list-group-item list-group-item-action list-group-item-secondary">
+                    document.getElementById('tasks-vault').insertAdjacentHTML('beforeend', ` <div class="container list-group-item list-group-item-action list-group-item-secondary my-2">
                             <div class="row p-2">
                                 <div class="col">
                                     <div class="row">

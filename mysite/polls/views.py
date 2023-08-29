@@ -353,7 +353,11 @@ def get_filtered_orders(request):
 
 def tasks(request):
     organizations = Organization.objects.filter(status='CR')
-    return render(request, 'polls/tasks.html', {"organizations": organizations})
+    not_finished_tasks = Task.objects.all().annotate(
+             max_end_data=F('start_DateTime') + F('form__duration')
+         ).filter(max_end_data__gte=datetime.datetime.now(datetime.timezone.utc))
+
+    return render(request, 'polls/tasks.html', {"organizations": organizations, "nf_tasks":not_finished_tasks})
 
 
 def get_order_instruction(request, order_id):

@@ -12,8 +12,58 @@
         <div class="row justify-content-center">
             <div class="col">
                 <div class="row justify-content-center">
-                    <div class="col-8" id="tasks-vault">
+                    <div class="col-8">
+                        {% for task in nf_tasks %}
+                            <div class="container list-group-item list-group-item-action list-group-item-warning my-2">
+                                <div class="row p-2">
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col-auto">
+                                                <button class="btn btn-outline-danger" disabled>Вы не завершили
+                                                    задание!
+                                                </button>
+                                            </div>
+                                            <div class="col-auto">
+                                                <h4>{{ task.form.order.name }}</h4>
+                                            </div>
 
+                                        </div>
+                                        <div class="row">
+                                            <h6>{{ task.form.order.org.name }}</h6>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <p class="text-break">{{ task.form.order.description }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-between">
+                                            <div class="col-auto">
+                                                <button class="btn btn-primary"
+                                                        onclick="ShowInstruction({{ task.form.order.id }})">Инструкция
+                                                </button>
+                                            </div>
+                                            <div class="col-auto">
+                                                <form action="/polls/task_implementation/{{ task.id }}">
+                                                    <button class="btn btn-success">Приступить</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="row justify-content-end">
+                                            <div class="col-auto">
+                                                <p class="fs-3 fw-bold m-0" style="color:green" ;>
+                                                    {{ task.form.order.task_cost }} у.е.</p>
+                                                <p>за задание</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div id="tasks-vault">
+
+                        </div>
 
                     </div>
                 </div>
