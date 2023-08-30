@@ -3,6 +3,7 @@ from django.urls import path
 from . import views
 
 app_name = "polls"
+
 urlpatterns = [
     path('', views.index, name='index'),
     path('postcard/', views.postcard, name='postcard'),
@@ -12,6 +13,7 @@ urlpatterns = [
     path('make_active_form/<int:form_id>', views.make_active_form, name='make_active_form'),
     path('form_creation/<int:id>/', views.form_creation, name='form_creation'),
     path('form_creation/<int:id>/save_config/', views.form_save_config, name='form_save_config'),
+    path('form_creation/<int:id>/save_duration_rep_config/', views.form_save_duration_rep_config, name='form_save_duration_rep_config'),
     path('form_creation/<int:id>/get_configuration/', views.form_get_config, name='form_get_config'),
     path('download_form_data/<int:form_id>', views.download_form_data, name='download_form_data'),
     path('organization/<int:org_id>', views.orgranization, name='organization'),

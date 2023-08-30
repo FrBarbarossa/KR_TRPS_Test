@@ -19,9 +19,41 @@
     Демо formset_test
 {% endblock %}
 {% block content %}
-    <div class="container">
-        <button class="btn btn-success mb-2" onclick="saveConfig();window.history.back();">Сохранить форму</button>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/form_creation.css' %}"/>
 
+
+    <div class="container">
+        <form onsubmit="event.preventDefault();saveConfig();saveDurRepConfig();">
+            <div class="row justify-content-center">
+                {#            {{ form.duration }}#}
+                <div class="col-auto">
+                    <div id="time_wrapper">
+                        <div id="time_input">
+                            <label for="minutes">
+                                <input type="number" id="minutes" value="00" max="59" min="15">
+                                <span class="label lbl-min">минуты</span>
+                            </label>
+                            <span>:</span>
+                            <label for="seconds">
+                                <input type="number" id="seconds" value="00" max="59" min="0">
+                                <span class="label lbl-sec">секунды</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto mx-5">
+                    <div id="time_wrapper">
+                        <div id="time_input">
+                            <label for="repeats">
+                                <input type="number" id="repeats" value="01" max="10" min="1">
+                                <span class="label lbl-repeats">повторений</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success mb-2">Сохранить форму</button>
+        </form>
         <div class="row">
             <div class="col-3">
 
@@ -33,7 +65,8 @@
                                     Один вариант
                                 </div>
                                 <div class="col-auto">
-                                    <button type="button" class="btn btn-success" onclick="addFormLine(this, 'chose')">
+                                    <button type="button" class="btn btn-success"
+                                            onclick="addFormLine(this, 'chose')">
                                         +
                                     </button>
                                 </div>

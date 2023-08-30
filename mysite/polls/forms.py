@@ -1,6 +1,6 @@
 from django import forms
 from polls.models import *
-
+import datetime
 
 class NameForm(forms.Form):
     your_name = forms.CharField(label="Your name", max_length=100)
@@ -56,9 +56,9 @@ class OrderForm(forms.ModelForm):
                                                          "aria-describedby": "basic-addon1"}))
 
     description = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'form-control',
-                                                                      'rows': 3,
-                                                                      "maxlength": 150,
-                                                                      'placeholder': "Описание задания. Не более 150 символов Будьте кратки :)"}))
+                                                                              'rows': 3,
+                                                                              "maxlength": 150,
+                                                                              'placeholder': "Описание задания. Не более 150 символов Будьте кратки :)"}))
 
     class Meta:
         model = Order

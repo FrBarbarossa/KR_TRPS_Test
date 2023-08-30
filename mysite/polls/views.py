@@ -276,8 +276,12 @@ def form_get_config(request, id):
     if len(Task.objects.filter(form_id=id)) > 0:
         status = 'Cant be edit'
     data = list(Form.objects.filter(id=id).values('data'))[0]['data']
-    print(data)
-    return JsonResponse({"status": status, "data": data}, status=200)
+    duration = Form.objects.get(id=id).duration
+    duration_str = f'{duration.seconds // 60}:{duration.seconds % 60}'
+    repeat_times = Form.objects.get(id=id).repeat_times
+    print(duration)
+    return JsonResponse({"status": status, "data": data, "duration": duration_str, "repeat_times": repeat_times},
+                        status=200)
 
 
 def form_save_config(request, id):
@@ -289,16 +293,29 @@ def form_save_config(request, id):
         form = Form.objects.get(id=id)
         form.data = json.load(request)
         form.save()
-        print("!")
+        # print(json.load(request))
     return JsonResponse({'status': 'Gotcha', "some_param": True}, status=200)
 
 
+def form_save_duration_rep_config(request, id):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        form = Form.objects.get(id=id)
+        req_info = json.load(request)
+        form.duration = req_info['duration']
+        form.repeat_times = req_info['repeats']
+        form.save()
+    return JsonResponse({'status': 'Gotcha', "some_param": True}, status=200)
+        # print()
+
+
 def download_form_data(request, form_id):
-    answers = Task.objects.filter(form_id=form_id).select_related("answer").filter(answer__task_id__isnull=False).values(
+    answers = Task.objects.filter(form_id=form_id).select_related("answer").filter(
+        answer__task_id__isnull=False).values(
         'answer__task_id', 'answer__data', 'answer__executor_id')
     response = HttpResponse(
         content_type="text/csv",
-        headers={"Content-Disposition": f'attachment; filename="results_form_{form_id}_{str(datetime.datetime.now())}.csv"'},
+        headers={
+            "Content-Disposition": f'attachment; filename="results_form_{form_id}_{str(datetime.datetime.now())}.csv"'},
     )
     form = Form.objects.get(id=form_id)
     headers_line = ['executor_id']
@@ -354,10 +371,10 @@ def get_filtered_orders(request):
 def tasks(request):
     organizations = Organization.objects.filter(status='CR')
     not_finished_tasks = Task.objects.all().annotate(
-             max_end_data=F('start_DateTime') + F('form__duration')
-         ).filter(max_end_data__gte=datetime.datetime.now(datetime.timezone.utc))
+        max_end_data=F('start_DateTime') + F('form__duration')
+    ).filter(max_end_data__gte=datetime.datetime.now(datetime.timezone.utc))
 
-    return render(request, 'polls/tasks.html', {"organizations": organizations, "nf_tasks":not_finished_tasks})
+    return render(request, 'polls/tasks.html', {"organizations": organizations, "nf_tasks": not_finished_tasks})
 
 
 def get_order_instruction(request, order_id):
@@ -393,9 +410,9 @@ def task_implementation(request, task_id):
         return HttpResponseRedirect(reverse("polls:tasks"))
 
     delta = abs(datetime.datetime.now(datetime.timezone.utc) - (task.start_DateTime + form.duration))
-    duration = f'{delta.seconds//3600}:{delta.seconds//60}:{delta.seconds%60}'
+    duration = f'{delta.seconds // 3600}:{delta.seconds // 60}:{delta.seconds % 60}'
     return render(request, 'polls/form_implementation.html',
-                  {"sources": sources, "form": form, 'task': task, "answers": answers, "duration":duration})
+                  {"sources": sources, "form": form, 'task': task, "answers": answers, "duration": duration})
 
 
 def save_form_answer(request, task_id):
