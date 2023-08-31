@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'users.apps.UserConfig',
     'social_django',
-    'ckeditor'
+    'ckeditor',
+    'django_celery_beat'
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -156,3 +157,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
+
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"

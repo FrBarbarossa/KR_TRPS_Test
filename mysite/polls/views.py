@@ -1,19 +1,13 @@
-import datetime
-import os
-import random
-
 import csv
 from django.shortcuts import render
-from django.db.models import F, Prefetch
+from django.db.models import F
 from polls.models import *
 from django.urls import reverse
-from django.http import HttpResponseRedirect, JsonResponse, FileResponse, HttpResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.db.utils import IntegrityError
-from django.forms import formset_factory
 from .forms import *
 from .models import *
 from django.contrib import messages
-from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required, permission_required
 import json
 import zipfile
@@ -21,8 +15,7 @@ from .forms import OrgForm
 from django.core.files.base import ContentFile
 from django.core.exceptions import PermissionDenied
 from django.core import serializers
-from django.conf import settings
-
+from .tasks import add
 
 @login_required
 @permission_required(["users.can_create_tasks", ],
@@ -34,6 +27,9 @@ def index(request):
 @login_required
 def orgranization(request, org_id):
     # Проверка, что организация принадлежит пользователю
+    print(add.apply_async((4, 4), countdown=5))
+    # debug_task()
+    # debug_task.delay()
     if not Organization.objects.filter(id=org_id):
         raise PermissionDenied()
     if org_id != Organization.objects.filter(profile=request.user.profile)[0].id:
