@@ -1,6 +1,10 @@
 from __future__ import absolute_import, unicode_literals
 from celery import Celery, shared_task
 from celery.schedules import crontab
+# from polls.models import *
+# from core.models import *
+from django.db.models import F
+
 
 app = Celery('tasks', broker='pyamqp://guest@localhost//')
 
@@ -33,3 +37,10 @@ def add(x, y):
 @shared_task
 def test_celery(x):
     return f"Passed thing: {x}"
+
+@app.task
+def clean_source_status():
+    from .models import Organization
+    # reserved_sources = Task.objects.filter(end_DateTime_idnull=True, status='ST').select_related("form").filter(F('start_DateTime') + F("form__duration"))
+    organization = Organization.objects.get(id=1)
+    return organization.name

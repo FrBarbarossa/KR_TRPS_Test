@@ -16,6 +16,8 @@ from django.core.files.base import ContentFile
 from django.core.exceptions import PermissionDenied
 from django.core import serializers
 from .tasks import add
+from django.db import connection
+
 
 @login_required
 @permission_required(["users.can_create_tasks", ],
@@ -27,9 +29,19 @@ def index(request):
 @login_required
 def orgranization(request, org_id):
     # Проверка, что организация принадлежит пользователю
-    print(add.apply_async((4, 4), countdown=5))
-    # debug_task()
-    # debug_task.delay()
+    # print(add.apply_async((4, 4), countdown=5))
+
+    # Можно апдейтить статус
+    reserved_sources = ReservedSource.objects.filter(status='RD').select_related('task').filter(
+        task__end_DateTime__isnull=True, task__status='ST').select_related("task__form").filter(
+        task__start_DateTime__lt=datetime.datetime.now(datetime.timezone.utc) - F("task__form__duration"))
+    # Можно апдейтить статус
+    res_tasks = Task.objects.select_related("form").filter(
+        start_DateTime__lt=datetime.datetime.now(datetime.timezone.utc) - F("form__duration"))
+
+    print(reserved_sources)
+    print(connection.queries)
+
     if not Organization.objects.filter(id=org_id):
         raise PermissionDenied()
     if org_id != Organization.objects.filter(profile=request.user.profile)[0].id:
@@ -301,7 +313,7 @@ def form_save_duration_rep_config(request, id):
         form.repeat_times = req_info['repeats']
         form.save()
     return JsonResponse({'status': 'Gotcha', "some_param": True}, status=200)
-        # print()
+    # print()
 
 
 def download_form_data(request, form_id):
