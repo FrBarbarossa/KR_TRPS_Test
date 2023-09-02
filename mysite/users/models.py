@@ -6,7 +6,7 @@ from PIL import Image
 # Extending User Model Using a One-To-One Link
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-
+    balance = models.DecimalField(max_digits=19, decimal_places=4, default=0)
     avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
     bio = models.TextField()
 

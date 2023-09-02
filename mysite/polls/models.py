@@ -49,12 +49,16 @@ class Order(models.Model):
     CREATED = 'CR'
     PUBLISHED = 'PB'
     BANNED = 'BD'
+    LOW_MONEY = "LM"
+    NO_DATA = "ND"
     # LOW MONEY & Co
 
     STATUS_CHOICES = [
         (CREATED, 'Created'),
         (PUBLISHED, 'Published'),
         (BANNED, 'Banned'),
+        (LOW_MONEY, "Low balance"),
+        (NO_DATA, "No data for arrange")
 
     ]
     org = models.ForeignKey(Organization, on_delete=models.CASCADE)

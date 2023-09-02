@@ -15,7 +15,7 @@ from .forms import OrgForm
 from django.core.files.base import ContentFile
 from django.core.exceptions import PermissionDenied
 from django.core import serializers
-from .tasks import add
+from .tasks import add, complete_task_timeout
 from django.db import connection
 
 
@@ -29,18 +29,23 @@ def index(request):
 @login_required
 def orgranization(request, org_id):
     # Проверка, что организация принадлежит пользователю
-    # print(add.apply_async((4, 4), countdown=5))
+    # add.apply_async((4, 9), countdown=30)
 
     # Можно апдейтить статус
-    reserved_sources = ReservedSource.objects.filter(status='RD').select_related('task').filter(
-        task__end_DateTime__isnull=True, task__status='ST').select_related("task__form").filter(
-        task__start_DateTime__lt=datetime.datetime.now(datetime.timezone.utc) - F("task__form__duration"))
-    # Можно апдейтить статус
-    res_tasks = Task.objects.select_related("form").filter(
-        start_DateTime__lt=datetime.datetime.now(datetime.timezone.utc) - F("form__duration"))
-
-    print(reserved_sources)
+    # reserved_sources = ReservedSource.objects.filter(status='RD').select_related('task').filter(
+    #     task__end_DateTime__isnull=True, task__status='ST').select_related("task__form").filter(
+    #     task__start_DateTime__lt=datetime.datetime.now(datetime.timezone.utc) - F("task__form__duration"))
+    # print(reserved_sources)
     print(connection.queries)
+    # # Можно апдейтить статус
+    # res_tasks = Task.objects.select_related("form").filter(
+    #     start_DateTime__lt=datetime.datetime.now(datetime.timezone.utc) - F("form__duration"))
+
+    # print(reserved_sources)
+    # reserved_sources = ReservedSource.objects.filter(task_id=11, status='RD')
+    # reserved_sources.update(status='LS')
+    # source_ids = list(map(lambda x: tuple(x.values())[0], reserved_sources.values('source_id')))
+    # print(source_ids)
 
     if not Organization.objects.filter(id=org_id):
         raise PermissionDenied()
@@ -366,7 +371,7 @@ def get_filtered_orders(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         orgs_ids = json.load(request)['orgs_ids']
     forms = list(Form.objects.filter(is_active=True).select_related('order').filter(order__org_id__in=orgs_ids,
-                                                                                    order__status="CR",
+                                                                                    order__status="PB",
                                                                                     order__balance__gt=F(
                                                                                         'order__task_cost')).values(
         'duration', 'order__name', 'order__description', 'order__org__name',
@@ -395,8 +400,17 @@ def create_task(request, order_id):
     form = Form.objects.get(order_id=order_id, is_active=True)
     sources = Source.objects.filter(order_id=order_id, status='OG', repeat_time_plan__gt=F('repeat_time_fact'))[
               :form.repeat_times]
+    if len(sources) < form.repeat_times:
+        form.order.status = 'ND'
+        form.order.save()
+        messages.warning(request, 'К сожалению, нет заданий на разметку.')
+        return HttpResponseRedirect(reverse("polls:tasks"))
     task = Task(executor_id=request.user.profile.id, form=form, status='ST')
     task.save()
+    complete_task_timeout.apply_async((task.id, request.user.profile.id), countdown=form.duration.seconds)
+    order = form.order
+    order.balance -= order.task_cost
+    order.save()
     for choosed_source in sources:
         # choosed_source = random.choice(sources)
         choosed_source.repeat_time_fact += 1
@@ -437,6 +451,7 @@ def save_form_answer(request, task_id):
         else:
             neo_answer = Answer(executor_id=executor, task_id=task_id, res_source_id=res_source, data=answ_data)
             neo_answer.save()
+        ReservedSource.objects.filter(id=res_source).update(status='DN')
         return JsonResponse({'status': "Ok"}, status=200)
         # print(json.load(request))
 
@@ -444,6 +459,11 @@ def save_form_answer(request, task_id):
 def complete_task(request, task_id):
     task = Task.objects.get(id=task_id)
     if task.form.repeat_times == len(task.answer_set.all()):
+        request.user.profile.balance += task.form.order.task_cost
+        request.user.profile.save()
+        task.status = 'DN'
+        task.end_DateTime = datetime.datetime.now(datetime.timezone.utc)
+        task.save()
         return JsonResponse({'status': "Ok"}, status=200)
     else:
         return JsonResponse({'status': "Not done"}, status=200)
