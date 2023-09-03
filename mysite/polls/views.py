@@ -169,6 +169,12 @@ def change_source_status(request, source_name):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
+def create_order(request, org_id):
+    order = Order(org_id=org_id, balance=0, task_cost=0, name='Задание на разметку')
+    order.save()
+    return HttpResponseRedirect(reverse("polls:order", kwargs={'order_id': order.id}))
+
+
 def change_order_status(request, order_id, status):
     order = Order.objects.get(id=order_id)
     if status == 'CR':

@@ -12,7 +12,28 @@
     <div class="container mx-auto px-1">
         {#        {{ order.instruction|safe }}#}
         <div class="row">
-            <h3>Редактирование заказа №{{ order.id }} "{{ order.name }}"</h3>
+            <div class="col-auto">
+                <h3>Редактирование заказа №{{ order.id }} "{{ order.name }}"</h3></div>
+            {% if order.status == 'CR' %}
+                <div class="col-auto">
+                    <p class="bg-secondary text-white p-1">Создан</p>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary">Опубликовать</button>
+                </div>
+            {% elif order.status == "PB" %}
+                <div class="col-auto px-0">
+                    <p class="bg-success text-white p-1">Опубликован</p>
+                </div>
+            {% elif order.status == "ND" %}
+                <div class="col-auto px-0">
+                    <p class="bg-warning text-white p-1">Недостаточно данных</p>
+                </div>
+            {% elif value.status == "LM" %}
+                <div class="col-auto px-0">
+                    <p class="bg-danger text-white p-1">Недостаточно средств</p>
+                </div>
+            {% endif %}
         </div>
         </br>
         <div class="row">

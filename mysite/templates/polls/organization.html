@@ -104,21 +104,35 @@
                                         </svg>
                                     </a>
                                 </div>
-                                    {% if value.status == 'CR' %}
-                                        <div class="col-auto">
-                                            <h5>{{ value.id }}</h5>
-                                        </div>
-                                        <div class="col-auto">
-                                            <p class="bg-secondary text-white p-1">Создан</p>
-                                        </div>
-                                    {% elif value.status == "PB" %}
-                                        <div class="col-auto">
-                                            <h5>{{ value.id }}</h5>
-                                        </div>
-                                        <div class="col-auto px-0">
-                                            <p class="bg-success text-white p-1">Опубликован</p>
-                                        </div>
-                                    {% endif %}
+                                {% if value.status == 'CR' %}
+                                    <div class="col-auto">
+                                        <h5>{{ value.id }}</h5>
+                                    </div>
+                                    <div class="col-auto">
+                                        <p class="bg-secondary text-white p-1">Создан</p>
+                                    </div>
+                                {% elif value.status == "PB" %}
+                                    <div class="col-auto">
+                                        <h5>{{ value.id }}</h5>
+                                    </div>
+                                    <div class="col-auto px-0">
+                                        <p class="bg-success text-white p-1">Опубликован</p>
+                                    </div>
+                                {% elif value.status == "ND" %}
+                                    <div class="col-auto">
+                                        <h5>{{ value.id }}</h5>
+                                    </div>
+                                    <div class="col-auto px-0">
+                                        <p class="bg-warning text-white p-1">Недостаточно данных</p>
+                                    </div>
+                                {% elif value.status == "LM" %}
+                                    <div class="col-auto">
+                                        <h5>{{ value.id }}</h5>
+                                    </div>
+                                    <div class="col-auto px-0">
+                                        <p class="bg-danger text-white p-1">Недостаточно средств</p>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="col-4">
