@@ -3,6 +3,7 @@ import time
 from users.models import Profile
 from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.db.models import signals, F
 
 
 def user_directory_path(instance, filename):
@@ -156,3 +157,29 @@ class Answer(models.Model):
     data = models.JSONField()
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+
+def manage_order_status(sender, instance, created, **kwargs):
+    signals.post_save.disconnect(receiver=manage_order_status, sender=Order)
+    print("Save is called")
+    form = Form.objects.filter(order_id=instance.id, is_active=True)
+    sources = Source.objects.filter(order_id=instance.id, status='OG', repeat_time_plan__gt=F('repeat_time_fact'))
+    if instance.status not in ['CR', 'BD']:
+        if form:
+            # print(sources)
+            if instance.balance < instance.task_cost:
+                instance.status = 'LM'
+            elif len(sources) < form[0].repeat_times:
+                instance.status = 'ND'
+            else:
+                instance.status = 'PB'
+        elif len(sources) == 0:
+            print("!")
+            instance.status = 'ND'
+        else:
+            instance.status = "PB"
+    instance.save()
+    signals.post_save.connect(receiver=manage_order_status, sender=Order)
+
+
+signals.post_save.connect(receiver=manage_order_status, sender=Order)

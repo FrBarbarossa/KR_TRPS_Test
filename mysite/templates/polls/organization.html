@@ -76,6 +76,16 @@
                         </button>
                     </div>
                 </div>
+
+                <div class="row">
+                    <form method="post" action="/polls/create_order/{{ organization.id }}"
+                          enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <button type="submit" class="btn btn-primary">Создать заказ</button>
+
+                    </form>
+                </div>
                 <br>
                 <br>
                 <div class="row">

@@ -161,11 +161,13 @@ def order(request, order_id):
 
 
 def change_source_status(request, source_name):
+    source = Source.objects.filter(source_file_name=source_name)
     if 'status' in request.POST:
-        Source.objects.filter(source_file_name=source_name).update(status='OG')
+        source.update(status='OG')
         print(request.POST['status'])
     else:
-        Source.objects.filter(source_file_name=source_name).update(status='ST')
+        source.update(status='ST')
+    source[0].order.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
@@ -173,7 +175,6 @@ def create_order(request, org_id):
     order = Order(org_id=org_id, balance=0, task_cost=0, name='Задание на разметку')
     order.save()
     return HttpResponseRedirect(reverse("polls:order", kwargs={'order_id': order.id}))
-
 
 def change_order_status(request, order_id, status):
     order = Order.objects.get(id=order_id)

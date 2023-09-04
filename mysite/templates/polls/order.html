@@ -16,20 +16,36 @@
                 <h3>Редактирование заказа №{{ order.id }} "{{ order.name }}"</h3></div>
             {% if order.status == 'CR' %}
                 <div class="col-auto">
-                    <p class="bg-secondary text-white p-1">Создан</p>
+                    <h5 class="bg-secondary text-white p-1">Создан</h5>
                 </div>
                 <div class="col-auto">
-                    <button class="btn btn-primary">Опубликовать</button>
+                    <form method="post" action="/polls/change_order_status/{{ order.id }}/{{ order.status }}"
+                          enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <button type="submit" class="btn btn-success">Опубликовать</button>
+
+                    </form>
                 </div>
+
             {% elif order.status == "PB" %}
-                <div class="col-auto px-0">
-                    <p class="bg-success text-white p-1">Опубликован</p>
+                <div class="col-auto">
+                    <h5 class="bg-success text-white p-1">Опубликован</h5>
+                </div>
+                <div class="col-2">
+                    <form method="post" action="/polls/change_order_status/{{ order.id }}/{{ order.status }}"
+                          enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <button type="submit" class="btn btn-secondary">Снять с публикации</button>
+
+                    </form>
                 </div>
             {% elif order.status == "ND" %}
                 <div class="col-auto px-0">
                     <p class="bg-warning text-white p-1">Недостаточно данных</p>
                 </div>
-            {% elif value.status == "LM" %}
+            {% elif order.status == "LM" %}
                 <div class="col-auto px-0">
                     <p class="bg-danger text-white p-1">Недостаточно средств</p>
                 </div>
@@ -57,34 +73,6 @@
                 </div>
                 <div class="row pt-4">
 
-                    {% if order.status == 'CR' %}
-                        <div class="col-auto">
-                            <h5 class="bg-secondary text-white p-1">Создан</h5>
-                        </div>
-                        <div class="col-auto">
-                            <form method="post" action="/polls/change_order_status/{{ order.id }}/{{ order.status }}"
-                                  enctype="multipart/form-data">
-                                {% csrf_token %}
-
-                                <button type="submit" class="btn btn-success">Опубликовать</button>
-
-                            </form>
-                        </div>
-
-                    {% elif order.status == "PB" %}
-                        <div class="col-auto">
-                            <h5 class="bg-success text-white p-1">Опубликован</h5>
-                        </div>
-                        <div class="col-2">
-                            <form method="post" action="/polls/change_order_status/{{ order.id }}/{{ order.status }}"
-                                  enctype="multipart/form-data">
-                                {% csrf_token %}
-
-                                <button type="submit" class="btn btn-secondary">Снять с публикации</button>
-
-                            </form>
-                        </div>
-                    {% endif %}
 
                 </div>
                 </br>
