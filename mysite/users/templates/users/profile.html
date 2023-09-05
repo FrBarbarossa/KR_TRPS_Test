@@ -1,44 +1,89 @@
 {% extends "src/base.html" %}
+{% load static %}
+
+{% block js_add %}
+    <script src="{% static 'js/profile.js' %}"></script>
+
+{% endblock %}
 {% block title %}Профиль{% endblock title %}
 {% block content %}
-    <div class="row my-3 p-3">
-        <img class="rounded-circle account-img" src="{{ user.profile.avatar.url }} " style="cursor: pointer;width:12em; height:10em;"/>
-    </div>
-    {% if user_form.errors %}
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            <div id="form_errors">
-                {% for key, value in user_form.errors.items %}
-                    <strong>{{ value }}</strong>
-                {% endfor %}
-            </div>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    {% endif %}
-    <div class="form-content">
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-row">
-                <div class="col-md-5">
-                    <div class="form-group">
-                        <label class="small mb-1">Имя пользователя:</label>
-                            {{ user_form.username }}
-                        <label class="small mb-1">Email:</label>
-                            {{ user_form.email }}
+    <div class="m-5">
+        <div class="row">
+            <div class="col-auto">
+                <div class="row my-3 p-3">
+                    <img class="rounded-circle account-img" src="{{ user.profile.avatar.url }} "
+                         style="cursor: pointer;width:12em; height:10em;"/>
+                </div>
+                {% if user_form.errors %}
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <div id="form_errors">
+                            {% for key, value in user_form.errors.items %}
+                                <strong>{{ value }}</strong>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <div class="form-group">
-                        <a href="{% url 'users:password_change' %}">Изменить пароль</a>
-                        <hr>
-                        <label class="small mb-1">Изменить аватар:</label>
-                        {{ profile_form.avatar }}
-                    </div>
-                    <label class="small mb-1">О себе:</label> {{ profile_form.bio }}
+                {% endif %}
+
+                <div class="form-content">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label class="small mb-1">Имя пользователя:</label>
+                                    {{ user_form.username }}
+                                    <label class="small mb-1">Email:</label>
+                                    {{ user_form.email }}
+                                </div>
+                                <div class="form-group">
+                                    <a href="{% url 'users:password_change' %}">Изменить пароль</a>
+                                    <hr>
+                                    <label class="small mb-1">Изменить аватар:</label>
+                                    {{ profile_form.avatar }}
+                                </div>
+                                <label class="small mb-1">О себе:</label> {{ profile_form.bio }}
+                            </div>
+                        </div>
+                        <br><br>
+                        <button type="submit" class="btn btn-dark btn-lg">Сохранить изменения</button>
+                        <button type="reset" class="btn btn-dark btn-lg">Сбросить изменения</button>
+                    </form>
                 </div>
             </div>
-            <br><br>
-            <button type="submit" class="btn btn-dark btn-lg">Сохранить изменения</button>
-            <button type="reset" class="btn btn-dark btn-lg">Сбросить изменения</button>
-        </form>
+            <div class="col-auto">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Ваш баланс {{ profile.balance }}</h5>
+                        <p class="card-text">Пожалуйста, выберите удобный для вас способ вывода средств ниже.</p>
+                    </div>
+                    <form action="/polls/change_profile_balance" method="post"
+                          enctype="multipart/form-data" id="EarnMoney">
+                        {% csrf_token %}
+                        <ul class="list-group list-group-flush">
+
+                            <li style="cursor: pointer;" onclick="EarnMoney.submit();" class="list-group-item">Платёжная система 1</li>
+                            <li style="cursor: pointer;" onclick="EarnMoney.submit();" class="list-group-item">Платёжная система 2</li>
+                            <li style="cursor: pointer;" onclick="EarnMoney.submit();" class="list-group-item">Платёжная система 3</li>
+                        </ul>
+                    </form>
+
+                    <div class="card-body">
+                        <button class="btn btn-primary" onclick="showEarnHistory();">История списаний</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal" data-bs-backdrop="static" tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="modal_content">
+!!!!!!
+            </div>
+        </div>
     </div>
 {% endblock content %}

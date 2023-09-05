@@ -29,6 +29,6 @@ urlpatterns = [
     path('create_task/<int:order_id>', views.create_task, name='create_task'),
     path('task_implementation/<int:task_id>', views.task_implementation, name='task_implementation'),
     path('task_implementation/save_form_answer/<int:task_id>', views.save_form_answer, name='save_form_answer'),
-    path('task_imlementation/complete_task/<int:task_id>', views.complete_task, name='complete_task')
-
+    path('task_imlementation/complete_task/<int:task_id>', views.complete_task, name='complete_task'),
+    path('change_profile_balance', views.change_profile_balance, name='change_profile_balance')
 ]

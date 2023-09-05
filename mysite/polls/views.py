@@ -26,6 +26,13 @@ def index(request):
     return render(request, 'polls/index.html')
 
 
+def change_profile_balance(request):
+    profile = request.user.profile
+    profile.balance = 0
+    profile.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
 @login_required
 def orgranization(request, org_id):
     # Проверка, что организация принадлежит пользователю
@@ -175,6 +182,7 @@ def create_order(request, org_id):
     order = Order(org_id=org_id, balance=0, task_cost=0, name='Задание на разметку')
     order.save()
     return HttpResponseRedirect(reverse("polls:order", kwargs={'order_id': order.id}))
+
 
 def change_order_status(request, order_id, status):
     order = Order.objects.get(id=order_id)
