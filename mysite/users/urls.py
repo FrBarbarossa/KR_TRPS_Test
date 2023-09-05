@@ -11,6 +11,7 @@ from django.contrib.auth import views as auth_views
 from .views import CustomLoginView, ResetPasswordView, ChangePasswordView
 
 from .forms import LoginForm
+from . import views
 
 app_name = "urls"
 
@@ -33,8 +34,8 @@ urlpatterns = [
                        auth_views.PasswordResetConfirmView.as_view(template_name='users/password_reset_confirm.html'),
                        name='password_reset_confirm'),
 
-
                   path('password-change/', ChangePasswordView.as_view(), name='password_change'),
+                  path('get_nav_info/', views.get_nav_info, name='get_nav_info'),
 
                   re_path(r'^oauth/', include('social_django.urls', namespace='social')),
 

@@ -174,7 +174,6 @@ def manage_order_status(sender, instance, created, **kwargs):
             else:
                 instance.status = 'PB'
         elif len(sources) == 0:
-            print("!")
             instance.status = 'ND'
         else:
             instance.status = "PB"

@@ -7,7 +7,9 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-
+from django.http import JsonResponse
+import json
+from polls.models import Organization
 
 from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 
@@ -15,6 +17,25 @@ from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
 def home(request):
     print(request.user)
     return render(request, 'users/home.html')
+
+
+def get_nav_info(request):
+    data = {}
+    org = Organization.objects.filter(profile=request.user.profile)
+    if request.user.is_anonymous:
+        data['type'] = 'anonymous'
+    elif org:
+        data['type'] = 'organization'
+        data['id'] = org[0].id
+        data['name'] = request.user.username
+        data['avatar'] = request.user.profile.avatar.url
+    elif request.user.profile:
+        data['type'] = 'profile'
+        data['id'] = request.user.profile.id
+        data['name'] = request.user.username
+        data['avatar'] = request.user.profile.avatar.url
+        data['balance'] = request.user.profile.balance
+    return JsonResponse({'status': 'Valid request', "data": data}, status=200)
 
 
 class RegisterView(View):
@@ -91,7 +112,7 @@ def profile(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, 'Your profile is updated successfully')
+            messages.success(request, 'Ваш профиль успешно обновлён')
             return redirect(to='users:users-profile')
     else:
         user_form = UpdateUserForm(instance=request.user)
@@ -100,4 +121,5 @@ def profile(request):
         # request.user.user_permissions.add(Permission.objects.get(codename="view_profile")) # тестирование добавления
         # print(request.user.get_user_permissions())
         # print(request.user.has_perm("users.view_profile"))
-    return render(request, 'users/profile.html', {'user_form': user_form, 'profile_form': profile_form, "profile":profile})
+    return render(request, 'users/profile.html',
+                  {'user_form': user_form, 'profile_form': profile_form, "profile": profile})
