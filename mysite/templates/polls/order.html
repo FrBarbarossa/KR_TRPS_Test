@@ -1,0 +1,241 @@
+{% extends "src/base.html" %}
+{% load i18n %}
+{% block title %}Заказ{% endblock title %}
+{% load static %}
+
+{% block js_add %}
+    <script src="{% static 'js/order.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <div class="container mx-auto px-1">
+        {#        {{ order.instruction|safe }}#}
+        <div class="row">
+            <div class="col-auto">
+                <h3>Редактирование заказа №{{ order.id }} "{{ order.name }}"</h3></div>
+            {% if order.status == 'CR' %}
+                <div class="col-auto">
+                    <h5 class="bg-secondary text-white p-1">Создан</h5>
+                </div>
+                <div class="col-auto">
+                    <form method="post" action="/polls/change_order_status/{{ order.id }}/{{ order.status }}"
+                          enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <button type="submit" class="btn btn-success">Опубликовать</button>
+
+                    </form>
+                </div>
+
+            {% elif order.status == "PB" %}
+                <div class="col-auto">
+                    <h5 class="bg-success text-white p-1">Опубликован</h5>
+                </div>
+                <div class="col-2">
+                    <form method="post" action="/polls/change_order_status/{{ order.id }}/{{ order.status }}"
+                          enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <button type="submit" class="btn btn-secondary">Снять с публикации</button>
+
+                    </form>
+                </div>
+            {% elif order.status == "ND" %}
+                <div class="col-auto px-0">
+                    <p class="bg-warning text-white p-1">Недостаточно данных</p>
+                </div>
+            {% elif order.status == "LM" %}
+                <div class="col-auto px-0">
+                    <p class="bg-danger text-white p-1">Недостаточно средств</p>
+                </div>
+            {% endif %}
+        </div>
+        </br>
+        <div class="row">
+            <div class="col-5">
+                <div class="row">
+                    <div class="col-auto">
+                        <form method="post" action="/polls/create_new_form/{{ order.id }}"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <button type="submit" class="btn btn-warning">Новая форма</button>
+
+                        </form>
+                    </div>
+                    <div class="col-6">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop">
+                            Редактировать инструкцию/название/описание
+                        </button>
+                    </div>
+                </div>
+                <div class="row pt-4">
+
+
+                </div>
+                </br>
+                <div class='row'>
+                    <div class="col-9">
+                        <form action="/polls/order/{{ order.id }}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="form-error"></div>
+
+                            <div class="mb-3">
+                                <label for="formFile" class="form-label">Загрузите архив с исходными данными для
+                                    разметки в формате .zip. Данные должны быть однородными (растры/аудиофайлы),
+                                    невыполнения этого условия моэет привести к неверным результатам разметки. Внутри
+                                    одного заказа все данные должны быть однородными во избежание ошибок
+                                    разметки.</label>
+                                <input class="form-control" type="file" id="formFile" name="myFile">
+                            </div>
+                            <button type="submit">Добавить</button>
+                        </form>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-3">
+                        <h5>Разметить</h5>
+                    </div>
+                    <div class="col-6">
+                        <h5>Имя загруженного файла с данными</h5>
+                    </div>
+                </div>
+                {% for source in sources %}
+                    <div class="row">
+                        <div class="col-3">
+                            <form action="/polls/change_source_status/{{ source.source_file_name }}" method="post"
+                                  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% if  source.status == 'OG' %}
+                                    <input class='form-check-input' type="checkbox" name="status" value="OG"
+                                           onChange="this.form.submit()" checked>
+                                {% elif source.status == "ST" %}
+                                    <input class='form-check-input' type="checkbox" name="status" value="ST"
+                                           onChange="this.form.submit()">
+                                {% endif %}
+                            </form>
+                        </div>
+
+                        <div class="col-6">
+                            <h6>{{ source.source_file_name }}</h6>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-7">
+                <div class="row">
+                    <div class="col-2">
+                        <h5>ID Формы</h5>
+                    </div>
+                    <div class="col-2">
+                        <h5>Кол-во в одном задании</h5>
+                    </div>
+                    <div class="col-2">
+                        <h5>Время на задание</h5>
+                    </div>
+                    <div class="col-2">
+                        <h5>Размечено данных</h5>
+                    </div>
+                </div>
+                {% for value in forms %}
+                    <div class="row mt-2">
+                        <div class="col-2">
+                            <div class="row">
+                                <div class="col-auto px-0">
+                                    <a href="/polls/form_creation/{{ value.id }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor"
+                                             class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                            <path fill-rule="evenodd"
+                                                  d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                                <div class="col-auto">
+                                    <h6>{{ value.id }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <h6>{{ value.repeat_times }}</h6>
+                        </div>
+                        <div class="col-2">
+                            <h6>{{ value.duration }}</h6>
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <div class="col-auto px-0">
+                                    <h6>{{ value.answers }}</h6>
+                                </div>
+                                <div class="col-auto">
+                                    <a href="/polls/download_form_data/{{ value.id }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor"
+                                             class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
+                                            <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z"/>
+                                            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            {% if value.is_active %}
+                                <button class="btn btn btn-outline-success" disabled>Активна</button>
+                            {% else %}
+                                <form method="post" action="/polls/make_active_form/{{ value.id }}"
+                                      enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success">Сделать активной</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <form method="post">
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Инструкция по выполнению</h1>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+
+                                <div class="row justify-content-center">
+
+                                    {% csrf_token %}
+                                    {{ form.name }}
+
+                                </div>
+                                <br>
+                                <div class="row justify-content-center">
+                                    {{ form.description }}
+
+                                </div>
+                                <br>
+                                <div class="row justify-content-center">
+                                    {{ form.instruction }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+{% endblock content %}

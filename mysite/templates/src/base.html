@@ -20,6 +20,7 @@
     {#    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">#}
 </head>
 <body>
+
 {% block js_add %}{% endblock %}
 <script type="text/javascript" src="/static/jquery-3.7.0.js"></script>
 
@@ -67,6 +68,18 @@
         </div>
     </div>
 </nav>
+{% if messages %}
+    <div class="container">
+        {% for message in messages %}
+
+            {#        <script>alert(message);</script>#}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>{{ message }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {#        <div class="alert alert-{{ message.tags }}">{{ message }}</div>#}
+        {% endfor %}</div>
+{% endif %}
 {% block content %}
 {% endblock content %}
 

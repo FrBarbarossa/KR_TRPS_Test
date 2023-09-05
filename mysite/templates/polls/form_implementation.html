@@ -1,0 +1,118 @@
+{% extends "src/base.html" %}
+{% load i18n %}
+{% block title %}Заказ{% endblock title %}
+{% load static %}
+
+{% load shuffle %}
+{% block js_add %}
+    <script src="{% static 'js/form_implementation.js' %}"></script>
+
+{% endblock %}
+{% block content %}
+    <section class="sticky" style="position: sticky;top: 75px;right: 75px;float: right">
+        <button type="button" class="btn btn-outline-danger" id="timer" disabled>Danger</button>
+    </section>
+    <div class="container mx-auto px-1">
+        {% for source in sources %}
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    {% if source.source.s_type == "IM" %}
+                        <img style="max-height:500px;" src={{ source.source.file_link.url }}>
+                    {% endif %}
+                </div>
+            </div>
+            <form onsubmit="event.preventDefault();setDone({{ source.id }},{{ task.id }});">
+
+                {% for quest in form.data %}
+                    <div class="row mt-3" name="answers_{{ source.id }}">
+                        <div class="col-auto">
+                            <div class="row">
+                                <h5>{{ quest.question }}</h5>
+                            </div>
+
+
+                            {% if quest.type == 'chose' %}
+                                {% if quest.attributes.random %}
+                                    {% for elem in quest.additional_elements|shuffle %}
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio"
+                                                       name='{{ source.id }}_{{ forloop.parentloop.counter0 }}'
+                                                       id="flexRadioDefault1" {% if quest.attributes.required %}
+                                                       required
+                                                {% endif %}
+                                                       value="{{ elem }}">
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    {{ elem }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for elem in quest.additional_elements %}
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio"
+                                                       name='{{ source.id }}_{{ forloop.parentloop.counter0 }}'
+                                                       id="flexRadioDefault1" {% if quest.attributes.required %}
+                                                       required
+                                                {% endif %}
+                                                       value="{{ elem }}">
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    {{ elem }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+
+
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="row mt-3">
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-warning">Сохранить ответ</button>
+                    </div>
+                    <div class="col-auto" id="done_mark_{{ source.id }}" {% if source.id not in answers %}
+                         style="visibility:hidden;"
+                    {% else %}
+                         style="visibility:visible;"
+                    {% endif %}>
+
+                        <div class="row">
+                            <div class="col-auto">
+                                <img src="{% static 'img/check.png' %}" style="max-height:35px;">
+                            </div>
+                            <div class="col-auto mt-1">
+                                <h5 class="text-success">Вы уже выполнили это задание</h5>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-2" id="quest_status_{{ forloop.counter0 }}"></div>
+            </form>
+            <hr style="    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;">
+        {% endfor %}
+        <div class="row">
+            <div class="col-auto">
+                <button class="btn btn-success" onclick="CompleteTask({{ task.id }})">Закончить задание</button>
+            </div>
+        </div>
+    </div>
+            <script type="text/javascript">window.onload = time('{{ duration }}');</script>
+
+{% endblock content %}
+
+
+
+

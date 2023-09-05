@@ -1,6 +1,9 @@
 from django.db import models
 import time
 from users.models import Profile
+from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
+from django.db.models import signals, F
 
 
 def user_directory_path(instance, filename):
@@ -27,7 +30,7 @@ class Organization(models.Model):
         (BANNED, 'Banned'),
 
     ]
-    name = models.CharField(unique=True, max_length=100, default='1' )
+    name = models.CharField(unique=True, max_length=100, default='1')
     profile = models.ForeignKey(Profile, unique=True, on_delete=models.CASCADE)
     bio = models.CharField(max_length=1000, default='No bio')
     balance = models.DecimalField(max_digits=19, decimal_places=4)
@@ -39,7 +42,7 @@ class Organization(models.Model):
     email = models.EmailField()
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    #default timezone.now
+    # default timezone.now
 
 
 # Create your models here.
@@ -47,29 +50,36 @@ class Order(models.Model):
     CREATED = 'CR'
     PUBLISHED = 'PB'
     BANNED = 'BD'
+    LOW_MONEY = "LM"
+    NO_DATA = "ND"
     # LOW MONEY & Co
 
     STATUS_CHOICES = [
         (CREATED, 'Created'),
         (PUBLISHED, 'Published'),
         (BANNED, 'Banned'),
+        (LOW_MONEY, "Low balance"),
+        (NO_DATA, "No data for arrange")
 
     ]
     org = models.ForeignKey(Organization, on_delete=models.CASCADE)
     balance = models.DecimalField(max_digits=19, decimal_places=4)
     task_cost = models.DecimalField(max_digits=5, decimal_places=4)
+    name = models.CharField(max_length=50, default="Задание на разметку")
+    description = models.CharField(max_length=150, default="Описание задания на разметку")
     status = models.CharField(
         max_length=2,
         choices=STATUS_CHOICES,
         default=CREATED
     )
+    instruction = RichTextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
 
 class Form(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    data = models.JSONField()
+    data = models.JSONField(null=True)
     is_active = models.BooleanField(default=False)
     duration = models.DurationField()
     repeat_times = models.PositiveSmallIntegerField()
@@ -82,9 +92,19 @@ class Source(models.Model):
         ("IM", "Inage"),
         ("VD", "Videos"),
     ]
+    STATUS = [
+        ("OG", "On going"),
+        ("ST", "Stopped")
+    ]
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    source_file_name = models.CharField(max_length=200)
     file_link = models.FileField(upload_to=user_directory_path)
     s_type = models.CharField(max_length=2, choices=TYPES)
+    status = models.CharField(
+        max_length=2,
+        choices=STATUS,
+        default='OG'
+    )
     repeat_time_plan = models.PositiveSmallIntegerField()
     repeat_time_fact = models.PositiveSmallIntegerField()
 
@@ -108,7 +128,7 @@ class Task(models.Model):
         default=STARTED
     )
     start_DateTime = models.DateTimeField(auto_now_add=True)
-    end_DateTime = models.DateTimeField()
+    end_DateTime = models.DateTimeField(null=True, blank=True)
 
 
 class ReservedSource(models.Model):
@@ -132,8 +152,34 @@ class ReservedSource(models.Model):
 
 class Answer(models.Model):
     executor = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    res_source = models.ForeignKey(ReservedSource, on_delete=models.CASCADE)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     data = models.JSONField()
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+
+def manage_order_status(sender, instance, created, **kwargs):
+    signals.post_save.disconnect(receiver=manage_order_status, sender=Order)
+    print("Save is called")
+    form = Form.objects.filter(order_id=instance.id, is_active=True)
+    sources = Source.objects.filter(order_id=instance.id, status='OG', repeat_time_plan__gt=F('repeat_time_fact'))
+    if instance.status not in ['CR', 'BD']:
+        if form:
+            # print(sources)
+            if instance.balance < instance.task_cost:
+                instance.status = 'LM'
+            elif len(sources) < form[0].repeat_times:
+                instance.status = 'ND'
+            else:
+                instance.status = 'PB'
+        elif len(sources) == 0:
+            print("!")
+            instance.status = 'ND'
+        else:
+            instance.status = "PB"
+    instance.save()
+    signals.post_save.connect(receiver=manage_order_status, sender=Order)
+
+
+signals.post_save.connect(receiver=manage_order_status, sender=Order)

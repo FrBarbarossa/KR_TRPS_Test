@@ -1,7 +1,7 @@
 let form_data = [];
 
 window.onload = getOnloadConfig;
-window.setInterval(saveConfig, 15000);
+let intreval = window.setInterval(saveConfig, 5000);
 
 
 let form_classifier = {
@@ -29,21 +29,35 @@ function getOnloadConfig() {
         success: function (response) {
             if (response.data) {
                 form_data = response.data;
+                console.log(response.data);
                 for (let i = 0; i < form_data.length; i++) {
                     document.getElementById('form_zone').insertAdjacentHTML('beforeend', getFormPiece(form_data[i]['type'], form_data[i]['question'], i));
-
                 }
-
-
             } else {
-                form_data = []
+                form_data = [];
+            }
+
+            if (response.status != "Ok") {
+                alert('Редактирование формы невозможно. Некоторые данные уже были размечены по форме в данной конфигурации.')
+            }
+            if (response.repeat_times) {
+                document.getElementById('repeats').value = response.repeat_times;
+            }
+            if (response.duration) {
+                let timeSplited = response.duration.split(":");
+                console.log(timeSplited);
+                document.getElementById('minutes').value = timeSplited[0];
+                document.getElementById('seconds').value = timeSplited[1];
+
             }
         },
         // on error
         error: function (response) {
             // alert the error if any error occured
-            console.log("Not success message 2")
-            console.log(response.responseJSON)
+            console.log("Not success message 2");
+            console.log(response.responseJSON);
+            window.location.replace(document.referrer);
+            alert('Error 403 forbidden');
         }
     });
 }
@@ -76,15 +90,53 @@ function saveConfig() {
             if (response.some_param == true) {
                 console.log("Success message")
             } else {
-                console.log("Not success message")
+                console.log("Not success message");
+                clearInterval(intreval);
             }
 
         },
         // on error
         error: function (response) {
             // alert the error if any error occured
-            console.log("Not success message 2")
-            console.log(response.responseJSON.errors)
+            console.log("Not success message 2");
+            console.log(response.responseJSON.errors);
+            window.location.replace(document.referrer);
+            alert('Error 403 forbidden');
+        }
+    });
+}
+
+function saveDurRepConfig() {
+    // here is ajax
+    let time = `00:${document.getElementById('minutes').value}:${document.getElementById('seconds').value}`;
+    let repeat = document.getElementById('repeats').value
+    console.log(time);
+    $.ajax({
+        headers: {"X-CSRFToken": getCookie("csrftoken")},
+        url: `${window.location.href}save_duration_rep_config/`,
+        type: "POST",
+        processData: false,
+        contentType: "application/json; charset=UTF-8",
+        data: JSON.stringify({"duration": time, 'repeats': repeat}), // get the form data
+        // on success
+        success: function (response) {
+            if (response.some_param == true) {
+                console.log("Success message");
+                window.history.back();
+
+            } else {
+                console.log("Not success message");
+                clearInterval(intreval);
+            }
+
+        },
+        // on error
+        error: function (response) {
+            // alert the error if any error occured
+            console.log("Not success message 2");
+            console.log(response.responseJSON.errors);
+            window.location.replace(document.referrer);
+            alert('Error 403 forbidden');
         }
     });
 }

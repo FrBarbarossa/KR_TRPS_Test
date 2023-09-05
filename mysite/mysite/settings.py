@@ -25,6 +25,7 @@ SECRET_KEY = 'django-insecure-ayq@i1o$ixfmgylsxk)zoj$h(p_yco-ca&ro2#(zfjz$#tvb0^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+CKEDITOR_UPLOAD_PATH ='instruction_uploads/'
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -40,7 +41,9 @@ INSTALLED_APPS = [
     'bootstrap5',
     'django_extensions',
     'users.apps.UserConfig',
-    'social_django'
+    'social_django',
+    'ckeditor',
+    'django_celery_beat'
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -154,3 +157,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
+
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
