@@ -63,6 +63,7 @@ def orgranization(request, org_id):
         if org_form.is_valid():
             print('ITS VALID!')
             print(org_form.cleaned_data)
+            org_form.save()
             return HttpResponseRedirect(reverse("polls:organization", kwargs={"org_id": org_id}))
     else:
         org_form = OrgForm(instance=Organization.objects.get(profile=request.user.profile))
@@ -71,6 +72,10 @@ def orgranization(request, org_id):
     return render(request, 'polls/organization.html',
                   {'org_form': org_form, "orders": orders, 'organization': organization})
 
+def create_organization(request):
+    org = Organization(name=request.user.username+"`s_organization", profile=request.user.profile, balance=0)
+    org.save()
+    return HttpResponseRedirect(reverse("polls:organization", kwargs={'org_id': org.id}))
 
 def top_up_balance(request, org_id):
     if not Organization.objects.filter(id=org_id) or not Organization.objects.filter(profile=request.user.profile):

@@ -207,7 +207,7 @@
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Инструкция по выполнению</h1>
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Настройка заказа</h1>
                         </div>
                         <div class="modal-body">
                             <div class="container">
@@ -215,21 +215,33 @@
                                 <div class="row justify-content-center">
 
                                     {% csrf_token %}
+                                    <label class="form-label">Название задания</label
                                     {{ form.name }}
 
                                 </div>
                                 <br>
                                 <div class="row justify-content-center">
+                                    <label class="form-label">Описание</label>
                                     {{ form.description }}
 
                                 </div>
                                 <br>
                                 <div class="row justify-content-center">
+                                    <label class="form-label">Стоимость выполнения задания</label>
+                                    {{ form.task_cost }}
+
+                                </div>
+                                <br>
+                                <div class="row justify-content-center">
+                                    <label class="form-label">Инструкция</label>
+
                                     {{ form.instruction }}
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Отмена</button>
+
                             <button type="submit" class="btn btn-primary">Сохранить</button>
                         </div>
                     </div>

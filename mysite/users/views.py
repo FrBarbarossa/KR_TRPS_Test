@@ -21,10 +21,10 @@ def home(request):
 
 def get_nav_info(request):
     data = {}
-    org = Organization.objects.filter(profile=request.user.profile)
     if request.user.is_anonymous:
         data['type'] = 'anonymous'
-    elif org:
+    elif Organization.objects.filter(profile=request.user.profile):
+        org = Organization.objects.filter(profile=request.user.profile)
         data['type'] = 'organization'
         data['id'] = org[0].id
         data['name'] = request.user.username
@@ -118,8 +118,9 @@ def profile(request):
         user_form = UpdateUserForm(instance=request.user)
         profile_form = UpdateProfileForm(instance=request.user.profile)
         profile = request.user.profile
+        org = Organization.objects.filter(profile=profile)
         # request.user.user_permissions.add(Permission.objects.get(codename="view_profile")) # тестирование добавления
         # print(request.user.get_user_permissions())
         # print(request.user.has_perm("users.view_profile"))
     return render(request, 'users/profile.html',
-                  {'user_form': user_form, 'profile_form': profile_form, "profile": profile})
+                  {'user_form': user_form, 'profile_form': profile_form, "profile": profile, 'org':len(org)})
