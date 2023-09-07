@@ -17,6 +17,7 @@ urlpatterns = [
     path('form_creation/<int:id>/get_configuration/', views.form_get_config, name='form_get_config'),
     path('download_form_data/<int:form_id>', views.download_form_data, name='download_form_data'),
     path('organization/<int:org_id>', views.orgranization, name='organization'),
+    path('create_organization', views.create_organization, name='create_organization'),
     path('change_order_balance/<int:order_id>', views.change_order_balance, name='change_order_balance'),
     path('top_up_balance/<int:org_id>', views.top_up_balance, name='top_up_balance'),
     path('order/<int:order_id>', views.order, name='order'),

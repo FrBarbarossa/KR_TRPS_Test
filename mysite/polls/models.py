@@ -159,6 +159,22 @@ class Answer(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
 
+class Transaction(models.Model):
+    org = models.ForeignKey(Organization, on_delete=models.SET(1))
+    task = models.ForeignKey(Task, unique=True, on_delete=models.CASCADE)
+    res_sum = models.DecimalField(max_digits=5, decimal_places=4)
+    STATUS = [
+        ("RS", "Reserved"),
+        ("CN", "Canceled"),
+        ("DN", "Done")
+    ]
+    status = models.CharField(
+        max_length=2,
+        choices=STATUS,
+        default='RS'
+    )
+
+
 def manage_order_status(sender, instance, created, **kwargs):
     signals.post_save.disconnect(receiver=manage_order_status, sender=Order)
     print("Save is called")
@@ -166,18 +182,22 @@ def manage_order_status(sender, instance, created, **kwargs):
     sources = Source.objects.filter(order_id=instance.id, status='OG', repeat_time_plan__gt=F('repeat_time_fact'))
     if instance.status not in ['CR', 'BD']:
         if form:
-            # print(sources)
+            print(instance.balance, instance.task_cost)
             if instance.balance < instance.task_cost:
                 instance.status = 'LM'
+                print('LM!')
             elif len(sources) < form[0].repeat_times:
                 instance.status = 'ND'
             else:
                 instance.status = 'PB'
         elif len(sources) == 0:
-            print("!")
             instance.status = 'ND'
+            print("ND!")
+        elif not form:
+            instance.status = 'CR'
         else:
             instance.status = "PB"
+            print("PB!")
     instance.save()
     signals.post_save.connect(receiver=manage_order_status, sender=Order)
 

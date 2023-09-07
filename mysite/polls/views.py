@@ -63,13 +63,20 @@ def orgranization(request, org_id):
         if org_form.is_valid():
             print('ITS VALID!')
             print(org_form.cleaned_data)
+            org_form.save()
             return HttpResponseRedirect(reverse("polls:organization", kwargs={"org_id": org_id}))
     else:
         org_form = OrgForm(instance=Organization.objects.get(profile=request.user.profile))
-    orders = Order.objects.filter(org_id=org_id)
+    orders = Order.objects.filter(org_id=org_id).order_by('org_id')
     organization = Organization.objects.get(id=org_id)
     return render(request, 'polls/organization.html',
                   {'org_form': org_form, "orders": orders, 'organization': organization})
+
+
+def create_organization(request):
+    org = Organization(name=request.user.username + "`s_organization", profile=request.user.profile, balance=0)
+    org.save()
+    return HttpResponseRedirect(reverse("polls:organization", kwargs={'org_id': org.id}))
 
 
 def top_up_balance(request, org_id):
@@ -161,6 +168,7 @@ def order(request, order_id):
             form.save(commit=True)
     else:
         form = OrderForm(instance=order)
+    order.save()
     return render(request, 'polls/order.html', {"order": order,
                                                 "form": form,
                                                 'forms': forms,
@@ -424,6 +432,8 @@ def create_task(request, order_id):
     task.save()
     complete_task_timeout.apply_async((task.id, request.user.profile.id), countdown=form.duration.seconds)
     order = form.order
+    transaction = Transaction(org_id=order.org.id, task_id=task.id, res_sum=order.task_cost, status='RS')
+    transaction.save()
     order.balance -= order.task_cost
     order.save()
     for choosed_source in sources:
@@ -474,6 +484,9 @@ def save_form_answer(request, task_id):
 def complete_task(request, task_id):
     task = Task.objects.get(id=task_id)
     if task.form.repeat_times == len(task.answer_set.all()):
+        transaction = Transaction.objects.get(task_id=task_id)
+        transaction.status = 'DN'
+        transaction.save()
         request.user.profile.balance += task.form.order.task_cost
         request.user.profile.save()
         task.status = 'DN'
