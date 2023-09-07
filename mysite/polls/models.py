@@ -159,6 +159,22 @@ class Answer(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
 
+class Transaction(models.Model):
+    org = models.ForeignKey(Organization, on_delete=models.SET(1))
+    task = models.ForeignKey(Task, unique=True, on_delete=models.CASCADE)
+    res_sum = models.DecimalField(max_digits=5, decimal_places=4)
+    STATUS = [
+        ("RS", "Reserved"),
+        ("CN", "Canceled"),
+        ("DN", "Done")
+    ]
+    status = models.CharField(
+        max_length=2,
+        choices=STATUS,
+        default='RS'
+    )
+
+
 def manage_order_status(sender, instance, created, **kwargs):
     signals.post_save.disconnect(receiver=manage_order_status, sender=Order)
     print("Save is called")

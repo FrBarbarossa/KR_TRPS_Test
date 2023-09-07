@@ -51,19 +51,25 @@ def clean_source_status():
 
 @app.task
 def complete_task_timeout(task_id, person_id):
-    from .models import Task, Person, ReservedSource, Source, Order
+    from .models import Task, Person, ReservedSource, Source, Order, Transaction
     from users.models import Profile
     task = Task.objects.get(id=task_id)
+    transaction = Transaction.objects.get(task_id=task_id)
+
     if task.status != "DN":
         cost = task.form.order.task_cost
         task.end_DateTime = datetime.datetime.now(datetime.timezone.utc)
         if task.form.repeat_times == len(task.answer_set.all()):
             profile = Profile.objects.get(id=person_id)
+            transaction.status = 'DN'
+            transaction.save()
             profile.balance += cost
             profile.save()
             task.status = 'DN'
         else:
             order = task.form.order
+            transaction.status = 'CN'
+            transaction.save()
             order.balance += cost
             order.save()
             task.status = 'LS'
