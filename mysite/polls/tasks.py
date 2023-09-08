@@ -57,7 +57,7 @@ def complete_task_timeout(task_id, person_id):
     transaction = Transaction.objects.get(task_id=task_id)
 
     if task.status != "DN":
-        cost = task.form.order.task_cost
+        cost = transaction.res_sum
         task.end_DateTime = datetime.datetime.now(datetime.timezone.utc)
         if task.form.repeat_times == len(task.answer_set.all()):
             profile = Profile.objects.get(id=person_id)

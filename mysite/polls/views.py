@@ -487,7 +487,7 @@ def complete_task(request, task_id):
         transaction = Transaction.objects.get(task_id=task_id)
         transaction.status = 'DN'
         transaction.save()
-        request.user.profile.balance += task.form.order.task_cost
+        request.user.profile.balance += transaction.res_sum
         request.user.profile.save()
         task.status = 'DN'
         task.end_DateTime = datetime.datetime.now(datetime.timezone.utc)

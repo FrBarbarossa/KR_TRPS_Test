@@ -119,11 +119,17 @@ def profile(request):
         profile_form = UpdateProfileForm(instance=request.user.profile)
         profile = request.user.profile
         org = Organization.objects.filter(profile=profile)
-        users_done_tasks = len(Transaction.objects.filter(status='DN').select_related('task').filter(task__executor_id=request.user.profile.id))
+        users_done_tasks = len(Transaction.objects.filter(status='DN').select_related('task').filter(
+            task__executor_id=request.user.profile.id))
         users_undone_tasks = len(Transaction.objects.filter(status='CN').select_related('task').filter(
             task__executor_id=request.user.profile.id))
+        users_earned_money = sum(Transaction.objects.filter(status='DN').select_related('task').filter(
+            task__executor_id=request.user.profile.id).values_list('res_sum', flat=True))
+        print(users_earned_money)
         # request.user.user_permissions.add(Permission.objects.get(codename="view_profile")) # тестирование добавления
         # print(request.user.get_user_permissions())
         # print(request.user.has_perm("users.view_profile"))
     return render(request, 'users/profile.html',
-                  {'user_form': user_form, 'profile_form': profile_form, "profile": profile, 'org': len(org)})
+                  {'user_form': user_form, 'profile_form': profile_form, "profile": profile, 'org': len(org),
+                   'users_done_tasks': users_done_tasks, 'users_undone_tasks': users_undone_tasks,
+                   "users_earned_money": users_earned_money})
