@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ayq@i1o$ixfmgylsxk)zoj$h(p_yco-ca&ro2#(zfjz$#tvb0^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-CKEDITOR_UPLOAD_PATH ='instruction_uploads/'
+CKEDITOR_UPLOAD_PATH = 'instruction_uploads/'
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'polls.apps.PollsConfig',
     'bootstrap5',
+    'django_admin_listfilter_dropdown',
+    'admin_searchable_dropdown',
     'django_extensions',
     'users.apps.UserConfig',
     'social_django',

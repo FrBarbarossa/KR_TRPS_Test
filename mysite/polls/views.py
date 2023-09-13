@@ -19,6 +19,7 @@ from .tasks import add, complete_task_timeout
 from django.db import connection
 
 
+
 @login_required
 @permission_required(["users.can_create_tasks", ],
                      raise_exception=True)  # Всё, что в списке - необходимые одновременно разрешения
