@@ -166,10 +166,11 @@ class TransAdmin(admin.ModelAdmin):
         field_name = 'task'  # name of the foreign key field
 
     search_fields = ['id']
-    list_display = ('id', 'org', 'task', 'res_sum', 'created_at', 'modified_at')
+    list_display = ('id', 'org', 'task', 'res_sum','status', 'created_at', 'modified_at')
     list_filter = [
         Filter1,
         Filter2,
+        ('status', ChoiceDropdownFilter),
         'created_at',
         'modified_at'
     ]

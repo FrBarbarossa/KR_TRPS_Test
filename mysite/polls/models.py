@@ -186,18 +186,16 @@ class Transaction(models.Model):
     RESERVED = 'RS'
     DONE = 'DN'
     CANCELED = 'CN'
-    STRANGE = "ST"
     STATUS = [
         (RESERVED, "Reserved"),
         (CANCELED, "Canceled"),
         (DONE, "Done"),
-        (STRANGE, "ST")
     ]
     status = models.CharField(
         max_length=2,
         choices=STATUS,
         default=RESERVED
-    ),
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 

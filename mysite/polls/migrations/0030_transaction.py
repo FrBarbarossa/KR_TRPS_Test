@@ -5,18 +5,29 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('polls', '0029_alter_order_status'),
     ]
 
-    operations = [
+    operations = [migrations.AddField(
+        model_name='reservedsource',
+        name='created_at',
+        field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+        preserve_default=False,
+    ),
+        migrations.AddField(
+            model_name='reservedsource',
+            name='modified_at',
+            field=models.DateTimeField(auto_now=True),
+        ),
         migrations.CreateModel(
             name='Transaction',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('res_sum', models.DecimalField(decimal_places=4, max_digits=5)),
-                ('status', models.CharField(choices=[('RS', 'Reserved'), ('CN', 'Canceled'), ('DN', 'Done')], default='RS', max_length=2)),
+                ('status',
+                 models.CharField(choices=[('RS', 'Reserved'), ('CN', 'Canceled'), ('DN', 'Done')], default='RS',
+                                  max_length=2)),
                 ('org', models.ForeignKey(on_delete=models.SET(1), to='polls.organization')),
                 ('task', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='polls.task')),
             ],
