@@ -42,6 +42,9 @@ class Organization(models.Model):
     email = models.EmailField()
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.name)
     # default timezone.now
 
 
@@ -76,6 +79,9 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return str(self.id)
+
 
 class Form(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -86,10 +92,13 @@ class Form(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return str(self.id)
+
 
 class Source(models.Model):
     TYPES = [
-        ("IM", "Inage"),
+        ("IM", "Image"),
         ("VD", "Videos"),
     ]
     STATUS = [
@@ -107,6 +116,9 @@ class Source(models.Model):
     )
     repeat_time_plan = models.PositiveSmallIntegerField()
     repeat_time_fact = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return str(self.id)
 
 
 class Task(models.Model):
@@ -130,6 +142,9 @@ class Task(models.Model):
     start_DateTime = models.DateTimeField(auto_now_add=True)
     end_DateTime = models.DateTimeField(null=True, blank=True)
 
+    def __str__(self):
+        return str(self.id)
+
 
 class ReservedSource(models.Model):
     RESERVED = 'RD'
@@ -148,6 +163,11 @@ class ReservedSource(models.Model):
         choices=STATUS_CHOICES,
         default=RESERVED
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.id)
 
 
 class Answer(models.Model):
@@ -163,16 +183,21 @@ class Transaction(models.Model):
     org = models.ForeignKey(Organization, on_delete=models.SET(1))
     task = models.ForeignKey(Task, unique=True, on_delete=models.CASCADE)
     res_sum = models.DecimalField(max_digits=5, decimal_places=4)
+    RESERVED = 'RS'
+    DONE = 'DN'
+    CANCELED = 'CN'
     STATUS = [
-        ("RS", "Reserved"),
-        ("CN", "Canceled"),
-        ("DN", "Done")
+        (RESERVED, "Reserved"),
+        (CANCELED, "Canceled"),
+        (DONE, "Done"),
     ]
     status = models.CharField(
         max_length=2,
         choices=STATUS,
-        default='RS'
+        default=RESERVED
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
 
 def manage_order_status(sender, instance, created, **kwargs):

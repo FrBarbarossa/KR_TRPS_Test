@@ -124,6 +124,20 @@ def change_order_balance(request, order_id):
         return JsonResponse(data={"orders": orders, 'organization': organization}, status=200)
 
 
+def get_order_transactions(request, order_id):
+    # users_done_tasks = len(Transaction.objects.filter(status='DN').select_related('task').filter(
+    #     task__executor_id=request.user.profile.id))
+    spent = sum(Transaction.objects.filter(status='DN').select_related('task').filter(
+        task__form__order_id=order_id).values_list('res_sum', flat=True))
+    reserved = sum(Transaction.objects.filter(status='RS').select_related('task').filter(
+        task__form__order_id=order_id).values_list('res_sum', flat=True))
+    balance = Order.objects.get(id=order_id).balance
+    last_hunderd_trans = list(Transaction.objects.filter().select_related('task').filter(
+        task__form__order_id=order_id).order_by('modified_at').values_list('modified_at', "res_sum", "status")[:50])
+    print(last_hunderd_trans)
+    return JsonResponse(data={"spent":spent, "reserved":reserved,"balance":balance, "last_transactions":last_hunderd_trans}, status=200)
+
+
 @login_required
 def order(request, order_id):
     if Order.objects.get(id=order_id).org.profile.user != request.user:
@@ -415,6 +429,7 @@ def tasks(request):
 
 def get_order_instruction(request, order_id):
     instr = Order.objects.get(id=order_id).instruction
+    print("!!")
     print(instr)
     return JsonResponse({'status': "Ok", "instruction": instr}, status=200)
 
@@ -487,7 +502,7 @@ def complete_task(request, task_id):
         transaction = Transaction.objects.get(task_id=task_id)
         transaction.status = 'DN'
         transaction.save()
-        request.user.profile.balance += task.form.order.task_cost
+        request.user.profile.balance += transaction.res_sum
         request.user.profile.save()
         task.status = 'DN'
         task.end_DateTime = datetime.datetime.now(datetime.timezone.utc)

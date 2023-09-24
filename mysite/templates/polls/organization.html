@@ -145,9 +145,24 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="col-4">
-                            <h5 id="{{ value.id }}">{{ value.balance }}</h5>
+                        <div class="col-3">
+                            <div class="row px-0 py-0 ">
+                                <div class="col-auto px-0">
+                                    <a href="" data-bs-toggle="modal"
+                                       data-bs-target="#staticBackdrop" onclick="ShowExpenses({{ value.id }})">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-info-lg" viewBox="0 0 16 16">
+                                            <path d="m9.708 6.075-3.024.379-.108.502.595.108c.387.093.464.232.38.619l-.975 4.577c-.255 1.183.14 1.74 1.067 1.74.72 0 1.554-.332 1.933-.789l.116-.549c-.263.232-.65.325-.905.325-.363 0-.494-.255-.402-.704l1.323-6.208Zm.091-2.755a1.32 1.32 0 1 1-2.64 0 1.32 1.32 0 0 1 2.64 0Z"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                                <div class="col-auto px-0">
+                                    <h5 id="{{ value.id }}">{{ value.balance }}</h5>
+                                </div>
+
+                            </div>
                         </div>
+
                         <div class="col-5">
                             <div class="row">
                                 <div class="col-auto">
@@ -165,6 +180,62 @@
 
                     </div>
                 {% endfor %}
+            </div>
+        </div>
+
+        <div class="modal fade" id="staticBackdrop" data-bs-keyboard="false" tabindex="-1"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Информация о заказе</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+
+                            <div class="row justify-content-center">
+                                <div class="col-auto m-0 px-0">
+                                    <div class="card" style="width: 18rem;">
+                                        <div class="card-body">
+                                            <h5 class="card-title" id="balance"></h5>
+                                            <h6 class="card-subtitle mb-2 text-body-secondary">Баланс заказа</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-auto m-0 px-0">
+                                    <div class="card" style="width: 18rem;">
+                                        <div class="card-body">
+                                            <h5 class="card-title" id="reserved"></h5>
+                                            <h6 class="card-subtitle mb-2 text-body-secondary">Зарезервировано
+                                                средств</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-auto m-0 px-0">
+                                    <div class="card" style="width: 18rem;">
+                                        <div class="card-body">
+                                            <h5 class="card-title" id="spent"></h5>
+                                            <h6 class="card-subtitle mb-2 text-body-secondary">Потрачено средств</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <label>Последние 50 транзакций:</label>
+                            <div class="row">
+                                <div class="col-3"><h5>Дата, время</h5></div>
+                                <div class="col-2"><h5>Статус</h5></div>
+                                <div class="col-2"><h5>Сумма</h5></div>
+                            </div>
+                            <div id="inner_content">
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
+                    </div>
+                </div>
             </div>
         </div>
 
