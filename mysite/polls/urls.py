@@ -20,6 +20,7 @@ urlpatterns = [
     path('create_organization', views.create_organization, name='create_organization'),
     path('change_order_balance/<int:order_id>', views.change_order_balance, name='change_order_balance'),
     path('top_up_balance/<int:org_id>', views.top_up_balance, name='top_up_balance'),
+    path('get_order_transactions/<int:order_id>', views.get_order_transactions, name='get_order_transactions'),
     path('order/<int:order_id>', views.order, name='order'),
     path('create_order/<int:org_id>', views.create_order, name='create_order'),
     path('change_order_status/<int:order_id>/<str:status>', views.change_order_status, name='change_order_status'),
