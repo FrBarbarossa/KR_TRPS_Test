@@ -69,11 +69,21 @@
                 <div class="list-group">
                     <div class="list-group-item list-group-item-action list-group-item-light">
                         <div class="container text-center">
-                            <div class="row justify-content-between">
+                            <div class="row justify-content-between my-1">
                                 <div class="col-auto">
-                                    Один вариант
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor" class="bi bi-ui-radios" viewBox="0 0 16 16">
+                                                <path d="M7 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zM0 12a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm7-1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zm0-5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 8a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM3 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="col">
+                                            <p>Один вариант</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-auto">
+                                <div class="col-auto mx-0 px-0">
                                     <button type="button" class="btn btn-success"
                                             onclick="addFormLine(this, 'chose')">
                                         +
@@ -82,6 +92,89 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="list-group-item list-group-item-action list-group-item-light">
+                        <div class="container text-center">
+                            <div class="row justify-content-between my-1">
+                                <div class="col-auto">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor" class="bi bi-ui-checks" viewBox="0 0 16 16">
+                                                <path d="M7 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zM2 1a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2zm0 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H2zm.854-3.646a.5.5 0 0 1-.708 0l-1-1a.5.5 0 1 1 .708-.708l.646.647 1.646-1.647a.5.5 0 1 1 .708.708l-2 2zm0 8a.5.5 0 0 1-.708 0l-1-1a.5.5 0 0 1 .708-.708l.646.647 1.646-1.647a.5.5 0 0 1 .708.708l-2 2zM7 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zm0-5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 8a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="col-auto">
+                                            <p>Несколько вариантов</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-auto mx-0 px-0">
+                                    <button type="button" class="btn btn-success"
+                                            onclick="addFormLine(this, 'chose_many')">
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-group-item list-group-item-action list-group-item-light">
+                        <div class="container text-center">
+                            <div class="row justify-content-between my-1">
+                                <div class="col-auto">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor" class="bi bi-menu-button-wide-fill"
+                                                 viewBox="0 0 16 16">
+                                                <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v2A1.5 1.5 0 0 0 1.5 5h13A1.5 1.5 0 0 0 16 3.5v-2A1.5 1.5 0 0 0 14.5 0h-13zm1 2h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1zm9.927.427A.25.25 0 0 1 12.604 2h.792a.25.25 0 0 1 .177.427l-.396.396a.25.25 0 0 1-.354 0l-.396-.396zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2H1zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2h14zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="col-auto">
+                                            <p>Выпадающий список</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-auto mx-0 px-0">
+                                    <button type="button" class="btn btn-success"
+                                            onclick="addFormLine(this, 'dropdown')">
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-group-item list-group-item-action list-group-item-light">
+                        <div class="container text-center">
+                            <div class="row justify-content-between my-1">
+                                <div class="col-auto">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor" class="bi bi-input-cursor-text"
+                                                 viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd"
+                                                      d="M5 2a.5.5 0 0 1 .5-.5c.862 0 1.573.287 2.06.566.174.099.321.198.44.286.119-.088.266-.187.44-.286A4.165 4.165 0 0 1 10.5 1.5a.5.5 0 0 1 0 1c-.638 0-1.177.213-1.564.434a3.49 3.49 0 0 0-.436.294V7.5H9a.5.5 0 0 1 0 1h-.5v4.272c.1.08.248.187.436.294.387.221.926.434 1.564.434a.5.5 0 0 1 0 1 4.165 4.165 0 0 1-2.06-.566A4.561 4.561 0 0 1 8 13.65a4.561 4.561 0 0 1-.44.285 4.165 4.165 0 0 1-2.06.566.5.5 0 0 1 0-1c.638 0 1.177-.213 1.564-.434.188-.107.335-.214.436-.294V8.5H7a.5.5 0 0 1 0-1h.5V3.228a3.49 3.49 0 0 0-.436-.294A3.166 3.166 0 0 0 5.5 2.5.5.5 0 0 1 5 2z"/>
+                                                <path d="M10 5h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4v1h4a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-4v1zM6 5V4H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v-1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h4z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="col-auto">
+                                            <p>Короткий текст</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-auto mx-0 px-0">
+                                    <button type="button" class="btn btn-success"
+                                            onclick="addFormLine(this, 'short_text')">
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
