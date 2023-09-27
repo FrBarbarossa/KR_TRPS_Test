@@ -15,6 +15,41 @@ let form_classifier = {
             <div class="col">
                 <p>Один вариант</p>
             </div>
+        </div>`,
+    'chose_many':
+        `<div class="row">
+            <div class="col-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ui-checks" viewBox="0 0 16 16">
+                    <path d="M7 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zM2 1a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2zm0 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H2zm.854-3.646a.5.5 0 0 1-.708 0l-1-1a.5.5 0 1 1 .708-.708l.646.647 1.646-1.647a.5.5 0 1 1 .708.708l-2 2zm0 8a.5.5 0 0 1-.708 0l-1-1a.5.5 0 0 1 .708-.708l.646.647 1.646-1.647a.5.5 0 0 1 .708.708l-2 2zM7 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zm0-5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 8a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+            </div>
+            <div class="col">
+                <p>Несколько вариантов</p>
+            </div>
+        </div>`,
+    'dropdown':
+        `<div class="row">
+            <div class="col-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                     fill="currentColor" class="bi bi-menu-button-wide-fill" viewBox="0 0 16 16">
+                     <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v2A1.5 1.5 0 0 0 1.5 5h13A1.5 1.5 0 0 0 16 3.5v-2A1.5 1.5 0 0 0 14.5 0h-13zm1 2h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1zm9.927.427A.25.25 0 0 1 12.604 2h.792a.25.25 0 0 1 .177.427l-.396.396a.25.25 0 0 1-.354 0l-.396-.396zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2H1zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2h14zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+            </div>
+            <div class="col">
+                <p>Выпадающий список</p>
+            </div>
+        </div>`,
+    'short_text':
+        `<div class="row">
+            <div class="col-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-input-cursor-text" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M5 2a.5.5 0 0 1 .5-.5c.862 0 1.573.287 2.06.566.174.099.321.198.44.286.119-.088.266-.187.44-.286A4.165 4.165 0 0 1 10.5 1.5a.5.5 0 0 1 0 1c-.638 0-1.177.213-1.564.434a3.49 3.49 0 0 0-.436.294V7.5H9a.5.5 0 0 1 0 1h-.5v4.272c.1.08.248.187.436.294.387.221.926.434 1.564.434a.5.5 0 0 1 0 1 4.165 4.165 0 0 1-2.06-.566A4.561 4.561 0 0 1 8 13.65a4.561 4.561 0 0 1-.44.285 4.165 4.165 0 0 1-2.06.566.5.5 0 0 1 0-1c.638 0 1.177-.213 1.564-.434.188-.107.335-.214.436-.294V8.5H7a.5.5 0 0 1 0-1h.5V3.228a3.49 3.49 0 0 0-.436-.294A3.166 3.166 0 0 0 5.5 2.5.5.5 0 0 1 5 2z"/>
+                    <path d="M10 5h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4v1h4a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-4v1zM6 5V4H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v-1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h4z"/>
+                </svg>
+            </div>
+            <div class="col">
+                <p>Короткий текст</p>
+            </div>
         </div>`
 }
 
@@ -141,31 +176,6 @@ function saveDurRepConfig() {
     });
 }
 
-function allowDrop(ev) {
-    ev.preventDefault();
-}
-
-function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
-}
-
-function drop(ev) {
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    if (ev.target.id == 'div1') {
-        // ev.target.appendChild(
-        //     '<p>Hello!</p>'
-        //     // document.getElementById(data)
-        // );
-        // alert(ev.target);
-        ev.target.insertAdjacentHTML('afterbegin', "<p>Hello!</p>");
-        document.getElementById("test_btn").setAttribute("disabled", "");
-        alert(document.getElementById("test_btn"));
-    } else {
-        alert(ev.target.id)
-    }
-}
-
 // Получить часть формы (плитки)
 function getFormPiece(type, question, position) {
     return `<div class="container list-group-item list-group-item-action list-group-item-secondary" name="form-piece"
@@ -177,7 +187,7 @@ function getFormPiece(type, question, position) {
                         </div>
                         <div class="row justify-content-between m-1">
                             <div class="col col-auto">
-                                ${form_classifier['chose']}
+                                ${form_classifier[type]}
                             </div>
                             <div class="col col-auto">
                                 <button type="button" class="btn btn-secondary" onclick="event.stopPropagation(); makeUp(${position})" id="up_btn" >
@@ -303,6 +313,7 @@ function editChoseOneOf(pos) {
     let first_elem = form_data[pos]['additional_elements'][0];
     let feature_name = form_data[pos]['attributes']['feature_name'];
     let quest = form_data[pos]['question'];
+    let type = form_data[pos].type;
     if (!feature_name) feature_name = '';
     if (!first_elem) first_elem = 'Ответ_0';
     document.getElementById('modal_content').innerHTML = `<div class="modal-header">
@@ -313,7 +324,7 @@ function editChoseOneOf(pos) {
 
                     <div class='container'>
 <!--                    Этот кусок нужно переписать, если функция будет обрабатывать не только "один из". Добавить вариативность от переданного типа вопроса-->
-                    ${form_classifier['chose']}
+                    ${form_classifier[type]}
                         <div class="row">
                             <h5>Вопрос</h5>
                         </div>
@@ -345,13 +356,13 @@ function editChoseOneOf(pos) {
                         <div class="row">
                             <h5>Параметры</h5>
                         </div>
-                        <div class="row">
+                        <div class="row" id="additional_question_params">
                             <div class="row m-2">
-                                <label for="result_name" class="form-label">Идентефикатор в результирующем датасете</label>
+                                <label for="feature_name" class="form-label">Идентефикатор в результирующем датасете</label>
                                 <input type="text" class="form-control"
                                        placeholder="Идентефикатор в результирующем датасете (ex: feature_sample_name)"
                                        aria-label="Идентефикатор в результирующем датасете"
-                                       id="result_name" value="${feature_name}">
+                                       id="feature_name" value="${feature_name}">
                             </div>
                             <div class="row m-2">
                                 <div class="form-check form-switch">
@@ -364,11 +375,19 @@ function editChoseOneOf(pos) {
                             <div class="row m-2">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" role="switch"
-                                           id="random" unchecked>
+                                           id="random" onchange="document.getElementById('ordered').disabled = !(document.getElementById('ordered').disabled);" unchecked>
                                     <label class="form-check-label" for="flexSwitchCheckChecked">Случайный порядок
                                         предложенных вариантов ответов</label>
                                 </div>
                             </div>
+                            <div class="row m-2">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                           id="ordered" onchange="document.getElementById('random').disabled = !(document.getElementById('random').disabled);"  unchecked>
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">Упорядочить предложенные варианты ответов</label>
+                                </div>
+                            </div>
+                            
                         </div>
 
                     </div>
@@ -410,7 +429,92 @@ function editChoseOneOf(pos) {
                             </div>`);
     document.getElementById("required").checked = form_data[pos]['attributes']['required'];
     document.getElementById("random").checked = form_data[pos]['attributes']['random'];
+    if (form_data[pos]['attributes']['random']) {
+        document.getElementById('ordered').disabled = !(document.getElementById('ordered').disabled);
+    }
+    document.getElementById("ordered").checked = form_data[pos]['attributes']['ordered'];
+    if (form_data[pos]['attributes']['ordered']) {
+        document.getElementById('random').disabled = !(document.getElementById('random').disabled);
+    }
 
+}
+
+function editShortText(pos) {
+    console.log('short_text');
+    let first_elem = form_data[pos]['additional_elements'][0];
+    let feature_name = form_data[pos]['attributes']['feature_name'];
+    let quest = form_data[pos]['question'];
+    let type = form_data[pos].type;
+    if (!feature_name) feature_name = '';
+    document.getElementById('modal_content').innerHTML = `<div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Редактирование вопроса</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modal_body">
+
+                    <div class='container'>
+                    ${form_classifier[type]}
+                        <div class="row">
+                            <h5>Вопрос</h5>
+                        </div>
+                        <div class="row m-2">
+                            <textarea class="form-control" aria-label="With textarea" id="quest">${quest}</textarea>
+                        </div>
+                        <div class="row">
+                            <h5>Параметры</h5>
+                        </div>
+                        <div class="row" id="additional_question_params">
+                            <div class="row m-2">
+                                <label for="feature_name" class="form-label">Идентефикатор в результирующем датасете</label>
+                                <input type="text" class="form-control"
+                                       placeholder="Идентефикатор в результирующем датасете (ex: feature_sample_name)"
+                                       aria-label="Идентефикатор в результирующем датасете"
+                                       id="feature_name" value="${feature_name}">
+                            </div>
+                            <div class="row m-2">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                           id="required" unchecked>
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">Обязательный
+                                        вопрос</label>
+                                </div>
+                            </div>
+                            <div class="row m-2 px-0">
+                                <div class="col-auto mx-0 px-0">
+                                    <input class="form-control mx-0 px-0" type="number" id='min_length' placeholder="Минимальная длина ответа" aria-label="default input example" min="0">
+                                </div>
+                                <div class="col-auto">
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">Минимальная длина ответа</label>
+                                </div>
+                            </div>
+                            <div class="row m-2 px-0">
+                                <div class="col-auto mx-0 px-0">
+                                    <input class="form-control mx-0 px-0" type="number" id='max_length' placeholder="Максимальная длина ответа" aria-label="default input example" min="0">
+                                </div>
+                                <div class="col-auto">
+                                    <label class="form-check-label" for="flexSwitchCheckChecked">Максимальная длина ответа</label>
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить изменения</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="savePiece(${pos})">Сохранить</button>
+                </div>`
+    document.getElementById("required").checked = form_data[pos]['attributes']['required'];
+    document.getElementById("min_length").value = form_data[pos]['attributes']['min_length'];
+    document.getElementById("max_length").value = form_data[pos]['attributes']['max_length'];
+
+
+    // document.getElementById("random").checked = form_data[pos]['attributes']['random'];
+    // if (form_data[pos]['attributes']['random']) {
+    //     document.getElementById('ordered').disabled = !(document.getElementById('ordered').disabled);
+    // }
 
 }
 
@@ -423,20 +527,39 @@ function savePiece(pos) {
         }
     }
     form_data[pos]['question'] = document.getElementById('quest').value;
-    form_data[pos]['attributes'] = {
-        'feature_name': document.getElementById('result_name').value,
-        "required": document.getElementById('required').checked,
-        "random": document.getElementById('random').checked
+    attributes_ids = ['feature_name', 'required', 'random', 'ordered', 'min_length', 'max_length']
+    for (let i = 0; i < attributes_ids.length; i++) {
+        elem = document.getElementById(attributes_ids[i])
+        if (elem) {
+            if (elem.value == 'on') {
+                form_data[pos]['attributes'][attributes_ids[i]] = elem.checked
+            } else {
+                form_data[pos]['attributes'][attributes_ids[i]] = elem.value
+            }
+        }
+        console.log(form_data[pos]['attributes'])
     }
+    // form_data[pos]['attributes'] = {
+    //     'feature_name': document.getElementById('result_name').value,
+    //     "required": document.getElementById('required').checked,
+    //     "random": document.getElementById('random').value,
+    //     "ordered": document.getElementById('ordered').checked,
+    //     // 'min_length': document.getElementById('min_length').value,
+    //     // 'max_length': document.getElementById('max_length').value
+    // }
     document.getElementsByName("quest_header")[pos].innerHTML = document.getElementById('quest').value;
 
 }
 
 // Функция открывает модальное окно, выбирает функцию наполнения в соответствии с типом
 function editPiece(pos) {
-    if (form_data[pos].type == 'chose') {
+    if (['chose', 'chose_many', 'dropdown'].includes(form_data[pos].type)) {
         editChoseOneOf(pos);
     }
+    if (form_data[pos].type == 'short_text') {
+        editShortText(pos);
+    }
+
 
     const myModal = new bootstrap.Modal('#exampleModal');
     myModal.show();
