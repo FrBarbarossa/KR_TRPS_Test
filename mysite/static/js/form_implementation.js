@@ -5,18 +5,29 @@
 
 function setDone(reserved_source_id, task_id) {
     // ev.preventDefault();
-    // console.log(document.getElementsByName(id));
     let output = {};
     output[reserved_source_id] = [];
     number_of_questions = document.getElementsByName(`answers_${reserved_source_id}`).length;
-    // console.log(leng);
     for (let quest_number = 0; quest_number < number_of_questions; quest_number++) {
-        // console.log(quest_number);
-        // console.log(`${reserved_source_id}_${quest_number}`);
-        console.log(output);
-        output[reserved_source_id].push($(`input:radio[name=${reserved_source_id}_${quest_number}]:checked`).val());
-        console.log($(`input:radio[name=${reserved_source_id}_${quest_number}]:checked`).val());
+        let answer_out = [];
+        let outs = document.querySelectorAll(`[name='${reserved_source_id}_${quest_number}']`);
+        outs.forEach(outer => {
+                console.log($(outer).val());
+                if (outer.type == 'radio' || outer.type == 'checkbox') {
+                    console.log(outer.type);
+                    if (outer.checked) {
+                        answer_out.push($(outer).val());
+                    }
+                    // console.log($(outer).val());
+                } else {
+                    answer_out.push($(outer).val());
+                }
+            }
+        );
+        // output[reserved_source_id].push($(`input:radio[name=${reserved_source_id}_${quest_number}]:checked`).val());
+        output[reserved_source_id].push(answer_out.join('&'))
     }
+
     console.log(output);
     $.ajax({
         headers: {"X-CSRFToken": getCookie("csrftoken")},
@@ -47,10 +58,10 @@ function setDone(reserved_source_id, task_id) {
         }
     });
 
-    // let answers = $(`input:radio[name^=${id}]:checked`);
-    // for (i = 0; i < answers.length; i++) {
-    //     console.log(answers[i].value);
-    // }
+// let answers = $(`input:radio[name^=${id}]:checked`);
+// for (i = 0; i < answers.length; i++) {
+//     console.log(answers[i].value);
+// }
 }
 
 function CompleteTask(task_id) {
@@ -102,12 +113,12 @@ function getCookie(c_name) {
 
 function time(time) {
     date = new Date;
-    console.log(time);
+    // console.log(time);
     let timestamp = 0;
     let timeSplited = time.split(":");
     timestamp += Number(timeSplited[1]) * 60;
     timestamp += Number(timeSplited[2]);
-    console.log(timestamp);
+    // console.log(timestamp);
     timestamp -= 1
     if (timestamp <= 0) {
         CompleteTask(Number(window.location.pathname.split('/')[3]));
@@ -120,7 +131,7 @@ function time(time) {
     s = timestamp % 60;
     m = (timestamp - s) / 60;
     result = h + ':' + m + ':' + s;
-    console.log(result);
+    // console.log(result);
     document.getElementById('timer').innerHTML = result;
     // "setTimeout" call function "time" every 1 second (1000 milliseconds)
     setTimeout('time("' + result + '");', '1000');

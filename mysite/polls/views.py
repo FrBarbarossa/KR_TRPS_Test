@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 import json
 import zipfile
+import filetype
 from .forms import OrgForm
 from django.core.files.base import ContentFile
 from django.core.exceptions import PermissionDenied
@@ -135,7 +136,9 @@ def get_order_transactions(request, order_id):
     last_hunderd_trans = list(Transaction.objects.filter().select_related('task').filter(
         task__form__order_id=order_id).order_by('modified_at').values_list('modified_at', "res_sum", "status")[:50])
     print(last_hunderd_trans)
-    return JsonResponse(data={"spent":spent, "reserved":reserved,"balance":balance, "last_transactions":last_hunderd_trans}, status=200)
+    return JsonResponse(
+        data={"spent": spent, "reserved": reserved, "balance": balance, "last_transactions": last_hunderd_trans},
+        status=200)
 
 
 @login_required
@@ -173,8 +176,14 @@ def order(request, order_id):
                             # print(zipfile.Path(myzip, filename).name)  # arcname/picture.jpeg -> picture.jpeg
                             name = first_name_part + zipfile.Path(myzip, filename).name
                             # print(name)
+                            mime = filetype.guess(myfile).mime
+                            print(mime)
+                            if mime.startswith('image'):
+                                s_type = 'IM'
+                            elif mime.startswith('audio'):
+                                s_type = 'VD'
                             Source(file_link=ContentFile(myfile.read(), name=name), source_file_name=archive_name,
-                                   s_type="IM", order=Order.objects.get(id=order_id), repeat_time_plan=2,
+                                   s_type=s_type, order=Order.objects.get(id=order_id), repeat_time_plan=2,
                                    repeat_time_fact=0).save()
         form = OrderForm(request.POST, instance=order)
         if form.is_valid():
@@ -359,16 +368,17 @@ def form_save_duration_rep_config(request, id):
 
 
 def download_form_data(request, form_id):
-    answers = Task.objects.filter(form_id=form_id).select_related("answer").filter(
+    answers = Task.objects.filter(form_id=form_id).select_related("answer").select_related(
+        'res_source_id').select_related('source').filter(
         answer__task_id__isnull=False).values(
-        'answer__task_id', 'answer__data', 'answer__executor_id')
+        'answer__task_id', 'answer__data', 'answer__executor_id', 'answer__res_source__source__file_link')
     response = HttpResponse(
         content_type="text/csv",
         headers={
             "Content-Disposition": f'attachment; filename="results_form_{form_id}_{str(datetime.datetime.now())}.csv"'},
     )
     form = Form.objects.get(id=form_id)
-    headers_line = ['executor_id']
+    headers_line = ['executor_id', 'source_file_name']
     for quest in form.data:
         if "feature_name" in quest['attributes'].keys():
             headers_line.append(quest['attributes']['feature_name'])
@@ -378,7 +388,9 @@ def download_form_data(request, form_id):
     writer = csv.writer(response)
     writer.writerow(headers_line)
     for answer in answers:
-        writer.writerow([answer['answer__executor_id']] + answer['answer__data'])
+        writer.writerow(
+            [answer['answer__executor_id']] + [answer['answer__res_source__source__file_link'].split('/')[-1]] + answer[
+                'answer__data'])
     return response
 
 
