@@ -1,14 +1,12 @@
 from django.urls import path
+from django.views.generic import RedirectView
 
 from . import views
 
 app_name = "polls"
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('postcard/', views.postcard, name='postcard'),
-    path('test_ajax/', views.test_ajax, name='ajax'),
-    path('formset_test', views.formset_test, name='formset_test'),
+    path('', RedirectView.as_view(url='/accounts/login')),
     path('create_new_form/<int:order_id>', views.create_new_form, name='create_new_form'),
     path('make_active_form/<int:form_id>', views.make_active_form, name='make_active_form'),
     path('form_creation/<int:id>/', views.form_creation, name='form_creation'),

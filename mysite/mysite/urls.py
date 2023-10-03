@@ -19,10 +19,11 @@ from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from django.views.generic import RedirectView
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/accounts/login')),
                   path('ckeditor/', include('ckeditor_uploader.urls')),
-
                   path('admin/', admin.site.urls),
                   path('polls/', include('polls.urls', namespace="polls")),
                   path('accounts/', include('users.urls', namespace="users")),

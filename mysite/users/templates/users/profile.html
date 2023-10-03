@@ -53,7 +53,35 @@
                     </form>
                 </div>
             </div>
+        <div class="col">
+        <div class="row mb-5">
+              <div class="col-auto m-0 px-0">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ users_done_tasks }}</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">Столько заданий вы выполнили</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto m-0 px-0">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ users_undone_tasks }}</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">Столько заданий вы отклонили</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto m-0 px-0">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ users_earned_money }} у.е.</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">Столько вы заработали</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
             {% if not org %}
+                <div class="row">
                 <div class="col-auto">
                     <div class="card" style="width: 18rem;">
                         <div class="card-body">
@@ -100,31 +128,9 @@
                         </div>
                     </div>
                 </div>
+                </div>
             {% endif %}
-            <div class="col-auto m-0 px-0">
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ users_done_tasks }}</h5>
-                        <h6 class="card-subtitle mb-2 text-body-secondary">Столько заданий вы выполнили</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="col-auto m-0 px-0">
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ users_undone_tasks }}</h5>
-                        <h6 class="card-subtitle mb-2 text-body-secondary">Столько заданий вы отклонили</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="col-auto m-0 px-0">
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ users_earned_money }} у.е.</h5>
-                        <h6 class="card-subtitle mb-2 text-body-secondary">Столько вы заработали</h6>
-                    </div>
-                </div>
-            </div>
+        </div>
         </div>
     </div>
 
@@ -132,7 +138,7 @@
          aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" id="modal_content">
-                !!!!!!
+                Здесь будет статистика
             </div>
         </div>
     </div>
