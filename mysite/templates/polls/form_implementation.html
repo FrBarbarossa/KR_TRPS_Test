@@ -19,6 +19,13 @@
                     {% if source.source.s_type == "IM" %}
                         <img style="max-height:500px;" src={{ source.source.file_link.url }}>
                     {% endif %}
+
+                    {% if source.source.s_type == "VD" %}
+                        <audio controls="controls">
+                            <source src={{ source.source.file_link.url }} type="audio/mpeg"/>
+                            Your browser does not support the audio element.
+                        </audio>
+                    {% endif %}
                 </div>
             </div>
             <form onsubmit="event.preventDefault();setDone({{ source.id }},{{ task.id }});">
@@ -67,6 +74,70 @@
                                 {% endif %}
                             {% endif %}
 
+                            {% if quest.type == 'chose_many' %}
+                                {% if quest.attributes.random %}
+                                    {% for elem in quest.additional_elements|shuffle %}
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       name='{{ source.id }}_{{ forloop.parentloop.counter0 }}'
+                                                       id="flexRadioDefault1" {% if quest.attributes.required %}
+                                                       required
+                                                {% endif %}
+                                                       value="{{ elem }}">
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    {{ elem }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for elem in quest.additional_elements %}
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       name='{{ source.id }}_{{ forloop.parentloop.counter0 }}'
+                                                       id="flexRadioDefault1" {% if quest.attributes.required %}
+                                                       required
+                                                {% endif %}
+                                                       value="{{ elem }}">
+                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                    {{ elem }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endif %}
+
+                            {% if quest.type == 'dropdown' %}
+                                {% if quest.attributes.random %}
+                                    <select class="form-select" name='{{ source.id }}_{{ forloop.counter0 }}'
+                                            aria-label="Выберите значение"
+                                            {% if quest.attributes.required %}required{% endif %}>
+                                        <option disabled selected value>Выберите значение</option>
+                                        {% for elem in quest.additional_elements|shuffle %}
+                                            <option value="{{ elem }}">{{ elem }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% else %}
+                                    <select class="form-select" name='{{ source.id }}_{{ forloop.counter0 }}'
+                                            aria-label="Выберите значение"
+                                            {% if quest.attributes.required %}required{% endif %}>
+                                        <option disabled selected value>Выберите значение</option>
+                                        {% for elem in quest.additional_elements %}
+                                            <option value="{{ elem }}">{{ elem }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if quest.type == 'short_text' %}
+                                <input class="form-control" type="text" name='{{ source.id }}_{{ forloop.counter0 }}'
+                                       placeholder="Введите ответ"
+                                       aria-label="default input"
+                                       {% if quest.attributes.required %}required{% endif %}>
+                            {% endif %}
 
                         </div>
                     </div>
@@ -109,7 +180,7 @@
             </div>
         </div>
     </div>
-            <script type="text/javascript">window.onload = time('{{ duration }}');</script>
+    <script type="text/javascript">window.onload = time('{{ duration }}');</script>
 
 {% endblock content %}
 
