@@ -418,4 +418,5 @@ def complete_task(request, task_id):
 
 
 def view_404(request, exception=None):
+    messages.warning(request, 'Запрашиваемая страница не найдена или удалена администрацией')
     return redirect('/')
