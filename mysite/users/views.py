@@ -86,9 +86,9 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     subject_template_name = 'users/password_reset_subject'
     success_message = "Мы отправили вам по электронной почте инструкции по установке вашего пароля, " \
                       "если существует учетная запись с указанным вами адресом электронной почты. Вы должны получить их в ближайшее время." \
-                      "Если вы не получите электронное письмо", \
+                      "Если вы не получите электронное письмо," \
         "пожалуйста, убедитесь, что вы ввели адрес, по которому регистрировались, и проверьте свою папку со спамом."
-    success_url = reverse_lazy('users:users-home')
+    success_url = reverse_lazy('users:login')
 
 
 class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
