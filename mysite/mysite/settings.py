@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ayq@i1o$ixfmgylsxk)zoj$h(p_yco-ca&ro2#(zfjz$#tvb0^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 CKEDITOR_UPLOAD_PATH = 'instruction_uploads/'
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 

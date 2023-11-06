@@ -1,5 +1,5 @@
 import csv
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import F
 from polls.models import *
 from django.urls import reverse
@@ -415,3 +415,8 @@ def complete_task(request, task_id):
         return JsonResponse({'status': "Ok"}, status=200)
     else:
         return JsonResponse({'status': "Not done"}, status=200)
+
+
+def view_404(request, exception=None):
+    messages.warning(request, 'Запрашиваемая страница не найдена или удалена администрацией')
+    return redirect('/')

@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
 
+handler404 = 'polls.views.view_404'
 urlpatterns = [
     path('', RedirectView.as_view(url='/accounts/login')),
                   path('ckeditor/', include('ckeditor_uploader.urls')),
